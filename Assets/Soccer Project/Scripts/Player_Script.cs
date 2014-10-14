@@ -122,39 +122,37 @@ public class Player_Script : MonoBehaviour {
 		initialRotation = transform.rotation * headTransform.rotation;
 	}
 	
-		void OnTriggerEnter(Collider other){//trigger bru buat ai defense doang
-			//Debug.Log ("in");
-			if (other.gameObject.tag == "Ball" && sphere.owner.tag == "PlayerTeam1") {
-				state = Player_State.STOLE_BALL;
-			//TODO hrs limit org yg ngejer bola, klo ud ad jgn dikejer lg
-			} else if(gameObject.tag == "OponentTeam" && other.gameObject.tag == "PlayerTeam1"){
-				//todo klo zonal diemin orgny, klo man to man tempel
-				if(!enemyMarked && type == TypePlayer.DEFENDER){//klo bek kn kg ad yg di mark, jd klo ad yg msk lgsg di mark,sbnerny bs jg ke ujung zonalnya mendekati bola
-					enemyMarked = other.gameObject;
-				} else if(!enemyMarked && type == TypePlayer.ATTACKER){//striker kg perlu mark sapa", jd ttp kejer bola aj
-					return;
-				}
-				//enemyMarked = other.gameObject;
-				if(state != Player_State.STOLE_BALL){
-					state = Player_State.MARK_ENEMY;
-				}
-			}
-		}
-		void OnTriggerExit(Collider other){
-			//Debug.Log ("out");
-			if (other.gameObject.tag == "Ball") {
-				//todo ngejer bola
-				state = Player_State.MOVE_AUTOMATIC;
-				//state = Player_State.MARK_ENEMY;
-			}else if(gameObject.tag == "OponentTeam" && other.gameObject.tag == "PlayerTeam1"){
-				//todo klo zonal diemin orgny, klo man to man tempel
-				if(other.gameObject == enemyMarked){//balik fokus ke awal
-					enemyMarked = originMarked;
-				}
-				
-				//state = Player_State.RESTING; //ini bikin ngebug, cpunya jg suka diem tiba"
-			}
-		}
+//		void OnTriggerEnter(Collider other){//trigger bru buat ai defense doang
+//			//Debug.Log ("in");
+//			if (sphere.owner && other.gameObject.tag == "Ball" && sphere.owner.tag == "PlayerTeam1") {
+//				state = Player_State.STOLE_BALL;
+//			//TODO hrs limit org yg ngejer bola, klo ud ad jgn dikejer lg
+//			} else if(gameObject.tag == "OponentTeam" && other.gameObject.tag == "PlayerTeam1"){
+//				//todo klo zonal diemin orgny, klo man to man tempel
+//				if(!enemyMarked && type == TypePlayer.DEFENDER){//klo bek kn kg ad yg di mark, jd klo ad yg msk lgsg di mark,sbnerny bs jg ke ujung zonalnya mendekati bola
+//					enemyMarked = other.gameObject;
+//				} else if(!enemyMarked && type == TypePlayer.ATTACKER){//striker kg perlu mark sapa", jd ttp kejer bola aj
+//					return;
+//				}
+//				//enemyMarked = other.gameObject;
+//				if(state != Player_State.STOLE_BALL){
+//					state = Player_State.MARK_ENEMY;
+//				}
+//			} 
+//		}
+//		void OnTriggerExit(Collider other){
+//			//Debug.Log ("out");
+//			if (other.gameObject.tag == "Ball") {
+//				//todo ngejer bola
+//				state = Player_State.MOVE_AUTOMATIC;
+//				//state = Player_State.MARK_ENEMY;
+//			}else if(gameObject.tag == "OponentTeam" && other.gameObject.tag == "PlayerTeam1"){
+//				//todo klo zonal diemin orgny, klo man to man tempel
+//				if(other.gameObject == enemyMarked){//balik fokus ke awal
+//					enemyMarked = originMarked;
+//				}
+//			}
+//		}
 	void Case_Controlling() {
 		
 		if ( sphere.inputPlayer == gameObject ) {//klo pemaen ini pmaen yg dikontrol user
@@ -381,7 +379,7 @@ public class Player_Script : MonoBehaviour {
 			if ( !animation.IsPlaying("turn")) {//klo ud kelar turnnya
 				gameObject.GetComponent<CapsuleCollider>().enabled = true;
 				transform.forward = -transform.forward;
-				animation.Play("ruuning");//tdnya rest
+				animation.Play("running");//tdnya rest
 				state = Player_State.CONTROLLING;
 			}
 			

@@ -59,6 +59,7 @@
      <Compile Include="Assets\Soccer Project\Standard Assets (Mobile)\Scripts\SmoothFollow2D.js" />
      <Compile Include="Assets\Soccer Project\Standard Assets (Mobile)\Scripts\TapControl.js" />
      <Compile Include="Assets\Soccer Project\Standard Assets (Mobile)\Scripts\ZoomCamera.js" />
+     <Compile Include="Assets\ZoneMarkScript.js" />
      <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
      <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Transparent Vertex Color.shader" />

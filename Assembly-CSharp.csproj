@@ -66,6 +66,7 @@
      <Compile Include="Assets\Soccer Project\Scripts\Shoot_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Side_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Sphere.cs" />
+     <Compile Include="Assets\Soccer Project\Scripts\ZoneMark_Script.cs" />
      <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
      <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
      <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Transparent Vertex Color.shader" />
