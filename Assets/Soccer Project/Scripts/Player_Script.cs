@@ -80,6 +80,7 @@ public class Player_Script : MonoBehaviour {
 	//changed
 	public GameObject enemyMarked;
 	public GameObject originMarked;
+	public GameObject whoMarkedMe;
 	
 	void  Awake () {
 		
@@ -523,13 +524,15 @@ public class Player_Script : MonoBehaviour {
 				                                                                               kondisiAwal.y, 
 				                                                                               kondisiAwal.z ) );//cari jarak initial position ama posisi player skrg
 				
-				// by dividing the horizontal position by the magnitude, we get a decimal percentage of the turn angle that we can use to drive the wheels
-				inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//x/magnitude itu buat cr arah rotasi ke tujuan pokokny
-				
-				if ( inputSteer == 0 && RelativeWaypointPosition.z < 0 )
-					inputSteer = 10.0f;
-				
-				transform.Rotate(0, inputSteer*10.0f , 0);
+//				// by dividing the horizontal position by the magnitude, we get a decimal percentage of the turn angle that we can use to drive the wheels
+//				inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//x/magnitude itu buat cr arah rotasi ke tujuan pokokny
+//				
+//				if ( inputSteer == 0 && RelativeWaypointPosition.z < 0 )
+//					inputSteer = 10.0f;
+//				
+//				transform.Rotate(0, inputSteer*10.0f , 0);
+
+				transform.LookAt(initialPosition);
 				float staminaTemp = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
 				transform.position += transform.forward*3.0f*Time.deltaTime*staminaTemp*Speed;			
 				//transform.position += transform.forward*3.0f*Time.deltaTime;
@@ -573,7 +576,9 @@ public class Player_Script : MonoBehaviour {
 					if(enemyMarked != null){//klo pny musuh yg perlu dimark
 						Debug.Log(name + " marking " + enemyMarked.name);
 						Debug.Log(name + " doing marking");
-						state = Player_State.MARK_ENEMY;//ngebug orgny cmn lari ditempat
+						//transform.LookAt(sphere.transform.position);//diem aj klo emg ga lg nyerang, kecuali zonany di breach
+						animation.Play("rest");
+						//state = Player_State.MARK_ENEMY;//ngebug orgny cmn lari ditempat
 						//goToDestinationWithoutDistance(originMarked.transform.position);//klo di test 2vs2 ud bener,tp klo full team msh error, suaka maju smua pemaennya
 					}else{
 						Debug.Log(name + " going after ball");
