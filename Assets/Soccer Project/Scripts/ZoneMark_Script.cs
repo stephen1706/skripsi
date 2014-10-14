@@ -44,6 +44,10 @@ public class ZoneMark_Script : MonoBehaviour {
 
 		} else if(other.gameObject.tag == "Ball"){
 			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MOVE_AUTOMATIC;
+		} else if(other.gameObject == zoneOwner){//klo lg lari kejer bola tp ud kepentok zonany
+			zoneOwner.GetComponent<Player_Script> ().timeToStopRest = 0;
+			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.TEMPORARY_RESTING;
+			//TODO jd bug krn klo ud ampe ujung cmn rest selamanya, klo arah bola pindah, dy ttp rest kg iktin pergerakannya
 		}
 		
 	}

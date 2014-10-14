@@ -58,7 +58,8 @@ public class Player_Script : MonoBehaviour {
 		CORNER_KICK,
 		TACKLE,
 		MARK_ENEMY,
-		GET_BALL
+		GET_BALL,
+		TEMPORARY_RESTING
 	};
 	
 	public Player_State state;
@@ -81,7 +82,7 @@ public class Player_Script : MonoBehaviour {
 	public GameObject enemyMarked;
 	public GameObject originMarked;
 	public GameObject whoMarkedMe;
-	
+	public float timeToStopRest;
 	void  Awake () {
 		
 		animation.Stop();
@@ -576,8 +577,9 @@ public class Player_Script : MonoBehaviour {
 					if(enemyMarked != null){//klo pny musuh yg perlu dimark
 						Debug.Log(name + " marking " + enemyMarked.name);
 						Debug.Log(name + " doing marking");
-						//transform.LookAt(sphere.transform.position);//diem aj klo emg ga lg nyerang, kecuali zonany di breach
-						animation.Play("rest");
+						//diem aj klo emg ga lg nyerang ato keujung zona dktin bola, kecuali zonany di breach
+						//animation.Play("rest");
+						goToDestination(sphere.transform.position);
 						//state = Player_State.MARK_ENEMY;//ngebug orgny cmn lari ditempat
 						//goToDestinationWithoutDistance(originMarked.transform.position);//klo di test 2vs2 ud bener,tp klo full team msh error, suaka maju smua pemaennya
 					}else{
@@ -601,6 +603,18 @@ public class Player_Script : MonoBehaviour {
 			transform.LookAt( new Vector3( sphere.GetComponent<Transform>().position.x, transform.position.y ,sphere.GetComponent<Transform>().position.z)  );
 			animation.Play("rest"); 		  
 			
+			break;
+
+		case Player_State.TEMPORARY_RESTING:
+			if(timeToStopRest < 3.0f){
+				transform.LookAt( new Vector3( sphere.GetComponent<Transform>().position.x, transform.position.y ,sphere.GetComponent<Transform>().position.z)  );
+				animation.Play("rest"); 		  
+			} else{
+				timeToStopRest = 0;
+				state = Player_State.MOVE_AUTOMATIC;
+			}
+
+			timeToStopRest += Time.deltaTime;
 			break;
 			
 			
