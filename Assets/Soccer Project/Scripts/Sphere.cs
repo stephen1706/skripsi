@@ -14,7 +14,7 @@ public class Sphere : MonoBehaviour {
 	public Transform blobPlayerSelected;
 	public float timeToSelectAgain = 0.0f;
 	public GameObject lastCandidatePlayer;
-	
+	public ArrayList  whoMarkedMe;
 	[HideInInspector]	
 	public float fHorizontal;//Vx bola
 	[HideInInspector]	

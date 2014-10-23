@@ -521,9 +521,9 @@ public class Player_Script : MonoBehaviour {
 			if (type == TypePlayer.DEFENDER || inGame.state != InGameState_Script.InGameState.PLAYING) {//klo lg goalkick,dll ttp hrs balik
 				animation.Play("running");
 				Vector3 RelativeWaypointPosition = transform.InverseTransformPoint(new Vector3( 
-				                                                                               kondisiAwal.x, 
-				                                                                               kondisiAwal.y, 
-				                                                                               kondisiAwal.z ) );//cari jarak initial position ama posisi player skrg
+				                                                                               initialPosition.x, 
+				                                                                               initialPosition.y, 
+				                                                                               initialPosition.z ) );//cari jarak initial position ama posisi player skrg
 				
 //				// by dividing the horizontal position by the magnitude, we get a decimal percentage of the turn angle that we can use to drive the wheels
 //				inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//x/magnitude itu buat cr arah rotasi ke tujuan pokokny
@@ -606,6 +606,11 @@ public class Player_Script : MonoBehaviour {
 			break;
 
 		case Player_State.TEMPORARY_RESTING:
+			if(sphere.owner && sphere.owner.tag == tag){
+				state = Player_State.MOVE_AUTOMATIC;
+				break;
+			}
+
 			if(timeToStopRest < 3.0f){
 				transform.LookAt( new Vector3( sphere.GetComponent<Transform>().position.x, transform.position.y ,sphere.GetComponent<Transform>().position.z)  );
 				animation.Play("rest"); 		  
@@ -616,10 +621,7 @@ public class Player_Script : MonoBehaviour {
 
 			timeToStopRest += Time.deltaTime;
 			break;
-			
-			
-			
-			
+
 		case Player_State.ONE_STEP_BACK:
 			
 			if (animation.IsPlaying("jump_backwards_bucle") == false)//klo ud abis animasi mundurnya otomatis lg geraknya
@@ -867,6 +869,27 @@ public class Player_Script : MonoBehaviour {
 //				transform.position += transform.forward * 5.5f * Time.deltaTime * staminaTemp2 * Speed;
 //			}
 //		}
+	}
+
+	float detectDistanceToNearestEnemy(){
+		float minDistance = 1000.0f;
+
+		if (gameObject.tag == "PlayerTeam1") {
+			foreach(GameObject oponent in oponents){
+				float distance = (oponent.position - transform.position).magnitude;
+				if(distance < minDistance){
+					minDistance = distance;
+				}
+			}
+		}else if(gameObject.tag == "OponentTeam"){
+			foreach(GameObject player in players){
+				float distance = (player.position - transform.position).magnitude;
+				if(distance < minDistance){
+					minDistance = distance;
+				}
+			}
+		}
+		return minDistance;
 	}
 }
 
