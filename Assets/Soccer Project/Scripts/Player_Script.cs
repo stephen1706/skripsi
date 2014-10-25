@@ -289,7 +289,7 @@ public class Player_Script : MonoBehaviour {
 		
 		timeToPass -= Time.deltaTime;
 		
-		if ( timeToPass < 0.0f && SomeoneInFront( oponents ) && detectDistanceToNearestEnemy() < 5.0f) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
+		if ( /*timeToPass < 0.0f && */ SomeoneInFront( oponents ) &&  detectDistanceToNearestEnemy() < 5.0f) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
 			timeToPass = UnityEngine.Random.Range( 1.0f, 5.0f);	//set wkt utk pass selanjutnya
 			Debug.Log("pass");
 			state = Player_State.PASSING;
@@ -453,7 +453,6 @@ public class Player_Script : MonoBehaviour {
 			if (animation.IsPlaying("pass") == false)
 				state = Player_State.MOVE_AUTOMATIC;
 			
-			
 			if (animation["pass"].normalizedTime > 0.3f && sphere.owner == this.gameObject) {//wkt animasi ud 0.3 bagian, bola ud lepas dr player,ownerny jd kosong
 				sphere.owner = null;
 				
@@ -480,7 +479,7 @@ public class Player_Script : MonoBehaviour {
 						
 					}
 					
-				} else {
+				} else {//enemy
 					
 					foreach ( GameObject go in oponents ) {
 						
@@ -489,16 +488,15 @@ public class Player_Script : MonoBehaviour {
 							
 							float magnitude = relativePos.magnitude;
 							float direction = Mathf.Abs(relativePos.x);
-							
-							if ( relativePos.z > 0.0f && direction < 15.0f && (magnitude+direction < bestCandidateCoord) ) {
+							float distanceWithMe = (go.transform.position - transform.position).magnitude;
+							if ( relativePos.z > 0.0f && direction < 15.0f && (magnitude+direction < bestCandidateCoord) 
+							    && distanceWithMe > 5.0f
+							    && calculateFriendDistanceToNearestEnemy(go) < 10.0f) {//syarat tetakhir itu buat tmnny hrs bebas dr musuh jg
 								bestCandidateCoord = magnitude+direction;
 								bestCandidatePlayer = go;		
 							}
-							
 						}
-						
 					}
-					
 				}
 				
 				if ( bestCandidateCoord != 1000.0f ) {
@@ -508,15 +506,12 @@ public class Player_Script : MonoBehaviour {
 					float distanceBall = (bestCandidatePlayer.transform.position - transform.position).magnitude*1.4f;//itung jarak total bola dr sumbu x,y,z
 					distanceBall = Mathf.Clamp( distanceBall, 15.0f, 40.0f );//jarak max passing 40
 					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(directionBall.x*distanceBall, distanceBall/5.0f, directionBall.z*distanceBall );
-					
+					Debug.Log(gameObject.name + " pass to " + bestCandidatePlayer.name);
 				} else {
 					//klo ga ada penerima yg layak
-					sphere.gameObject.GetComponent<Rigidbody>().velocity = transform.forward*20.0f;
-					
+					//sphere.gameObject.GetComponent<Rigidbody>().velocity = transform.forward*20.0f;
+					goToDestination(goalPosition.position);
 				}
-				
-				
-				
 			}
 			break;
 		case Player_State.GO_ORIGIN:
@@ -889,9 +884,30 @@ public class Player_Script : MonoBehaviour {
 					minDistance = distance;
 				}
 			}
-		}else if(gameObject.tag == "OponentTeam"){
+		} else if(gameObject.tag == "OponentTeam"){
 			foreach(GameObject player in players){
 				float distance = (player.transform.position - transform.position).magnitude;
+				if(distance < minDistance){
+					minDistance = distance;
+				}
+			}
+		}
+		return minDistance;
+	}
+
+	float calculateFriendDistanceToNearestEnemy(GameObject go){
+		float minDistance = 1000.0f;
+
+		if (gameObject.tag == "PlayerTeam1") {
+			foreach(GameObject oponent in oponents){
+				float distance = (oponent.transform.position - go.transform.position).magnitude;
+				if(distance < minDistance){
+					minDistance = distance;
+				}
+			}
+		} else if(gameObject.tag == "OponentTeam"){
+			foreach(GameObject player in players){
+				float distance = (player.transform.position - go.transform.position).magnitude;
 				if(distance < minDistance){
 					minDistance = distance;
 				}
