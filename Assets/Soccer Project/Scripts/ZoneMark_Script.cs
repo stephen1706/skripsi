@@ -32,7 +32,7 @@ public class ZoneMark_Script : MonoBehaviour {
 			}
 			Debug.Log(zoneOwner.name + "'s zone breach by " + other.gameObject.name);
 		} else if(other.gameObject.tag == "Ball"){
-			if(sphere.whoMarkedMe.Count < 2){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
+			if(sphere.whoMarkedMe.Count < 1 && sphere.owner.tag != gameObject.tag){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
 				if(!sphere.whoMarkedMe.Contains(gameObject)){
 					sphere.whoMarkedMe.Add(gameObject);
 				}
@@ -56,7 +56,7 @@ public class ZoneMark_Script : MonoBehaviour {
 			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MOVE_AUTOMATIC;
 		} else if(other.gameObject == zoneOwner){//klo lg lari kejer bola tp ud kepentok zonany
 			zoneOwner.GetComponent<Player_Script> ().timeToStopRest = 0;
-			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.TEMPORARY_RESTING;
+			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.RESTING;
 			//TODO jd bug krn klo ud ampe ujung cmn rest selamanya, klo arah bola pindah, dy ttp rest kg iktin pergerakannya
 		}
 		

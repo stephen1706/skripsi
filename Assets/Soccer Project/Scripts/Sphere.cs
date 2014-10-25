@@ -37,9 +37,7 @@ public class Sphere : MonoBehaviour {
 	public float timeShootButtonPressed = 0.0f;
 
 
-	// Use this for initialization
 	void Start () {
-		// get players, joystick, InGame and Blob
 		players = GameObject.FindGameObjectsWithTag("PlayerTeam1");		
 		oponents = GameObject.FindGameObjectsWithTag("OponentTeam");
 		joystick = GameObject.FindGameObjectWithTag("joystick").GetComponent<Joystick_Script>();
@@ -54,12 +52,8 @@ public class Sphere : MonoBehaviour {
 		shadowBall.rotation = Quaternion.identity;
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-		
-		// get input
+	void Update () {
 		fVertical = Input.GetAxis("Vertical");
 		fHorizontal = Input.GetAxis("Horizontal");
 		fVertical += joystick.position.y;
@@ -82,8 +76,8 @@ public class Sphere : MonoBehaviour {
 			timeShootButtonPressed = 0.0f;
 		}
 				
-		// if the ball has owner then just put on its feets
-		if ( owner ) {
+	
+		if ( owner ) {//klo bolany pny owner, bikin biar bolany nempel dikaki player
 				
 	 		transform.position = owner.transform.position + owner.transform.forward/1.5f + owner.transform.up/5.0f; //set posisi bola jd nempel ama pemiliknya
 			float velocity = owner.GetComponent<Player_Script>().actualVelocityPlayer.magnitude;//iktin speed pemiliknya
@@ -91,11 +85,9 @@ public class Sphere : MonoBehaviour {
 			if ( fVertical == 0.0f && fHorizontal == 0.0f  && owner.tag == "PlayerTeam1" ) {//klo pemiliknya player dan pemiliknya lg diem
 				velocity = 0.0f;
 				gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0,0,0);
-				
 			}
 			
 			transform.RotateAround( owner.transform.right, velocity*10.0f );//rotatearound buat rotate bendanya
-		
 		}		
 		
 		
@@ -110,9 +102,6 @@ public class Sphere : MonoBehaviour {
 			}
 		
 		}
-		
-		
-		
 		
 	}
 
@@ -140,15 +129,13 @@ public class Sphere : MonoBehaviour {
 			}
 			
 		}
-		
-		// set in STOLE_BALL if player found
+
 		if ( candidatePlayer )//suruh org terdekat kejer bolany
 			candidatePlayer.GetComponent<Player_Script>().state = Player_Script.Player_State.STOLE_BALL;//ganti state itu org jd mau ngejer bola
 		
 		
 	}
-	
-	// activate nearest player to ball
+
 	void ActivateNearestPlayer() {//ini buat select player plg dkt buat kejer bola,jadiin pmaennya yg selected skrg
 		
 		lastInputPlayer = inputPlayer;
@@ -188,21 +175,15 @@ public class Sphere : MonoBehaviour {
 			blobPlayerSelected.transform.position = new Vector3( candidatePlayer.transform.position.x, candidatePlayer.transform.position.y+0.1f, candidatePlayer.transform.position.z);
 			blobPlayerSelected.transform.LookAt( new Vector3( blobPlayerSelected.position.x + fHorizontal, blobPlayerSelected.position.y, blobPlayerSelected.position.z + fVertical  ) );//lookat buat rotate pmaen ke target
 		
-			// if player is not in any of this states then just CONTROLLING
+			// klo orgny ga lg ngap", jd control aj
 			if ( inputPlayer.GetComponent<Player_Script>().state != Player_Script.Player_State.PASSING &&
 			     inputPlayer.GetComponent<Player_Script>().state != Player_Script.Player_State.SHOOTING &&
 			     inputPlayer.GetComponent<Player_Script>().state != Player_Script.Player_State.PICK_BALL &&
 			     inputPlayer.GetComponent<Player_Script>().state != Player_Script.Player_State.CHANGE_DIRECTION &&
-			     inputPlayer.GetComponent<Player_Script>().state != Player_Script.Player_State.TACKLE
+			     inputPlayer.GetComponent<Player_Script>().state != Player_Script.Player_State.TACKLE){
 
-			    )
-			{
 				inputPlayer.GetComponent<Player_Script>().state = Player_Script.Player_State.CONTROLLING;
 			}
 		} 
 	}
-	
-		
-	
-	
 }

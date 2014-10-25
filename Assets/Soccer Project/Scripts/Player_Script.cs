@@ -289,7 +289,7 @@ public class Player_Script : MonoBehaviour {
 		
 		timeToPass -= Time.deltaTime;
 		
-		if ( timeToPass < 0.0f && SomeoneInFront( oponents ) ) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
+		if ( timeToPass < 0.0f && SomeoneInFront( oponents ) && detectDistanceToNearestEnemy() < 5.0f) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
 			timeToPass = UnityEngine.Random.Range( 1.0f, 5.0f);	//set wkt utk pass selanjutnya
 			Debug.Log("pass");
 			state = Player_State.PASSING;
@@ -328,8 +328,10 @@ public class Player_Script : MonoBehaviour {
 	}
 	
 	void  Update() {
-		Debug.Log ("State dari : " + name + " : " + state);
-
+		//TODO harus buat enemy wkt nyerang nyebar, biar kaga ngerumun, trs tim kita jg jd ikt ngerumun krn saling ngejagain
+		//TODO masalhnya 1bola bisa dipunyain ama 3org enemy krn berhimpit
+		//Debug.Log ("State dari : " + name + " : " + state);
+		Debug.Log ("nearest dari " + name + " : " + detectDistanceToNearestEnemy ());
 		//		if (sphere.owner) {
 		//			Debug.Log ("owner : " + sphere.owner.tag);
 		//		}else{
@@ -518,7 +520,7 @@ public class Player_Script : MonoBehaviour {
 			}
 			break;
 		case Player_State.GO_ORIGIN:
-			if (type == TypePlayer.DEFENDER || inGame.state != InGameState_Script.InGameState.PLAYING) {//klo lg goalkick,dll ttp hrs balik
+			if (type == TypePlayer.DEFENDER || type == TypePlayer.ATTACKER || inGame.state != InGameState_Script.InGameState.PLAYING) {//klo lg goalkick,dll ttp hrs balik
 				animation.Play("running");
 				Vector3 RelativeWaypointPosition = transform.InverseTransformPoint(new Vector3( 
 				                                                                               initialPosition.x, 
@@ -574,7 +576,7 @@ public class Player_Script : MonoBehaviour {
 				Debug.Log(name + "'s team is on attack : " + hisTeamOnAttack);
 				//Debug.Log("owner : " + sphere.owner.tag + ", thisPlayer tag : " + gameObject.tag + ", attack = " + hisTeamOnAttack);
 				if(!hisTeamOnAttack || attackingPos.z == 0){//klo attackingpos ga diset, atau lagi bertahan, kejer bola aj	
-					if(enemyMarked != null){//klo pny musuh yg perlu dimark
+					if(enemyMarked != null && type != TypePlayer.ATTACKER){//klo pny musuh yg perlu dimark
 						Debug.Log(name + " marking " + enemyMarked.name);
 						Debug.Log(name + " doing marking");
 						//diem aj klo emg ga lg nyerang ato keujung zona dktin bola, kecuali zonany di breach
@@ -582,9 +584,10 @@ public class Player_Script : MonoBehaviour {
 						goToDestination(sphere.transform.position);
 						//state = Player_State.MARK_ENEMY;//ngebug orgny cmn lari ditempat
 						//goToDestinationWithoutDistance(originMarked.transform.position);//klo di test 2vs2 ud bener,tp klo full team msh error, suaka maju smua pemaennya
-					}else{
-						Debug.Log(name + " going after ball");
-						goToDestinationWithoutDistance(sphere.transform.position);
+					} else{ // casenya attacker, ga perlu kejar bola
+						state = Player_State.GO_ORIGIN;
+						//Debug.Log(name + " going after ball");
+						//goToDestinationWithoutDistance(sphere.transform.position);
 					}
 				}
 				else {//klo bola lg ditim kita,pemaen lari ke tujuan masing"
@@ -599,13 +602,17 @@ public class Player_Script : MonoBehaviour {
 			
 			
 		case Player_State.RESTING:
-			
+			//TODO CEK ATTACKERNYA BEHAVIOURNYA BNR KAGA
 			transform.LookAt( new Vector3( sphere.GetComponent<Transform>().position.x, transform.position.y ,sphere.GetComponent<Transform>().position.z)  );
 			animation.Play("rest"); 		  
-			
+			if(type != TypePlayer.DEFENDER && sphere.owner.tag == gameObject.tag){
+				state = Player_State.MOVE_AUTOMATIC;
+			} else if(type == TypePlayer.DEFENDER && sphere.owner == gameObject){//klo bekny kebetulan pegang bola, kyk lg KO ga blh diem aj
+				state = Player_State.MOVE_AUTOMATIC;
+			}
 			break;
 
-		case Player_State.TEMPORARY_RESTING:
+		case Player_State.TEMPORARY_RESTING://TODO masih bug bikin ngerumun
 			if(sphere.owner && sphere.owner.tag == tag){
 				state = Player_State.MOVE_AUTOMATIC;
 				break;
@@ -633,7 +640,8 @@ public class Player_Script : MonoBehaviour {
 			
 			
 		case Player_State.STOLE_BALL://buat GK ambil bola ato player mw rebut bola
-			if(sphere.owner == null || sphere.owner != gameObject){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
+			if((sphere.owner == null || sphere.owner.tag != gameObject.tag)){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
+
 				/*
 						Vector3 rp =  sphere.transform.position-transform.position;//cara lain buat rotate antara 2 titik,hasil sama aj
 						Quaternion rotate = Quaternion.LookRotation(rp);
@@ -876,14 +884,14 @@ public class Player_Script : MonoBehaviour {
 
 		if (gameObject.tag == "PlayerTeam1") {
 			foreach(GameObject oponent in oponents){
-				float distance = (oponent.position - transform.position).magnitude;
+				float distance = (oponent.transform.position - transform.position).magnitude;
 				if(distance < minDistance){
 					minDistance = distance;
 				}
 			}
 		}else if(gameObject.tag == "OponentTeam"){
 			foreach(GameObject player in players){
-				float distance = (player.position - transform.position).magnitude;
+				float distance = (player.transform.position - transform.position).magnitude;
 				if(distance < minDistance){
 					minDistance = distance;
 				}
