@@ -30,9 +30,9 @@ public class ZoneMark_Script : MonoBehaviour {
 				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MARK_ENEMY;
 				other.gameObject.GetComponent<Player_Script>().whoMarkedMe = zoneOwner;
 			}
-			Debug.Log(zoneOwner.name + "'s zone breach by " + other.gameObject.name);
+			//aaDebug.Log(zoneOwner.name + "'s zone breach by " + other.gameObject.name);
 		} else if(other.gameObject.tag == "Ball"){
-			if(sphere.whoMarkedMe.Count < 1 && sphere.owner.tag != gameObject.tag){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
+			if(sphere.whoMarkedMe.Count < 1 && sphere.owner && sphere.owner.tag != gameObject.tag){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
 				if(!sphere.whoMarkedMe.Contains(gameObject)){
 					sphere.whoMarkedMe.Add(gameObject);
 				}

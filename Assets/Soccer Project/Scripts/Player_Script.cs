@@ -83,12 +83,14 @@ public class Player_Script : MonoBehaviour {
 	public GameObject originMarked;
 	public GameObject whoMarkedMe;
 	public float timeToStopRest;
+
 	void  Awake () {
 		
 		animation.Stop();
 		if (gameObject.tag == "PlayerTeam1") {
 			state = Player_State.PREPARE_TO_KICK_OFF;
 		}
+
 	}
 	
 	
@@ -289,11 +291,11 @@ public class Player_Script : MonoBehaviour {
 		
 		timeToPass -= Time.deltaTime;
 		
-		if ( /*timeToPass < 0.0f && */ SomeoneInFront( oponents ) &&  detectDistanceToNearestEnemy() < 5.0f) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
-			timeToPass = UnityEngine.Random.Range( 1.0f, 5.0f);	//set wkt utk pass selanjutnya
-			Debug.Log("pass");
+		if ( timeToPass < 0.0f && SomeoneInFront(players) &&/* SomeoneInFront( oponents ) && */ detectDistanceToNearestEnemy() < 5.0f) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
+			//timeToPass = UnityEngine.Random.Range( 1.0f, 5.0f);	//set wkt utk pass selanjutnya
+			timeToPass = 1;
+			Debug.Log("harus pass");
 			state = Player_State.PASSING;
-			animation.Play("pass");
 			timeToBeSelectable = 1.0f;
 			temporallyUnselectable = true;
 		}
@@ -331,7 +333,7 @@ public class Player_Script : MonoBehaviour {
 		//TODO harus buat enemy wkt nyerang nyebar, biar kaga ngerumun, trs tim kita jg jd ikt ngerumun krn saling ngejagain
 		//TODO masalhnya 1bola bisa dipunyain ama 3org enemy krn berhimpit
 		//Debug.Log ("State dari : " + name + " : " + state);
-		Debug.Log ("nearest dari " + name + " : " + detectDistanceToNearestEnemy ());
+		//aaDebug.Log ("nearest dari " + name + " : " + detectDistanceToNearestEnemy ());
 		//		if (sphere.owner) {
 		//			Debug.Log ("owner : " + sphere.owner.tag);
 		//		}else{
@@ -364,6 +366,7 @@ public class Player_Script : MonoBehaviour {
 				animation.Play("pass");//lgsg pass aja
 				timeToBeSelectable = 2.0f;
 				state = Player_State.PASSING;
+
 				inGame.state = InGameState_Script.InGameState.PLAYING;
 				inGame.isKickOff = false;
 			}
@@ -431,6 +434,8 @@ public class Player_Script : MonoBehaviour {
 			if (animation["shoot"].normalizedTime > 0.2f && sphere.owner == this.gameObject) {//wkt animasi ud 0.2 bagian, bola ud lepas dr player,ownerny jd kosong
 				state = Player_State.MOVE_AUTOMATIC;
 				sphere.owner = null;
+				sphere.lastOwner = gameObject;
+
 				if ( gameObject.tag == "PlayerTeam1" ) {
 					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x*30.0f, 5.0f, transform.forward.z*30.0f );
 					barPosition = 0;//munculin shooting bar
@@ -449,13 +454,15 @@ public class Player_Script : MonoBehaviour {
 			break;
 			
 		case Player_State.PASSING:
-			
-			if (animation.IsPlaying("pass") == false)
+			if (animation.IsPlaying("pass") == false ){//biar bs bedain yg msh holdup ama ud kelar passing
 				state = Player_State.MOVE_AUTOMATIC;
+				collider.enabled = true;
+			}
 			
-			if (animation["pass"].normalizedTime > 0.3f && sphere.owner == this.gameObject) {//wkt animasi ud 0.3 bagian, bola ud lepas dr player,ownerny jd kosong
+			if (sphere.owner == this.gameObject) {//wkt animasi ud 0.3 bagian, bola ud lepas dr player,ownerny jd kosong
 				sphere.owner = null;
-				
+				sphere.lastOwner = gameObject;
+
 				GameObject bestCandidatePlayer = null;
 				float bestCandidateCoord = 1000.0f;
 				
@@ -489,33 +496,67 @@ public class Player_Script : MonoBehaviour {
 							float magnitude = relativePos.magnitude;
 							float direction = Mathf.Abs(relativePos.x);
 							float distanceWithMe = (go.transform.position - transform.position).magnitude;
-							if ( relativePos.z > 0.0f && direction < 15.0f && (magnitude+direction < bestCandidateCoord) 
-							    && distanceWithMe > 5.0f
+							if ( /*relativePos.z > 0.0f && */direction < 25.0f && (magnitude+direction < bestCandidateCoord) 
+							    && distanceWithMe > 5.0f  && distanceWithMe < 25.0f 
 							    && calculateFriendDistanceToNearestEnemy(go) < 10.0f) {//syarat tetakhir itu buat tmnny hrs bebas dr musuh jg
 								bestCandidateCoord = magnitude+direction;
 								bestCandidatePlayer = go;		
 							}
 						}
 					}
+
+					if ( bestCandidateCoord == 1000.0f ) {//kalo ga ada yg bs dipass cr tmn terjauh
+						Debug.Log ("ga ad yg bisa dipass");
+						float min = bestCandidateCoord;
+						foreach ( GameObject go in oponents ) {
+
+							if ( go != gameObject ) {
+								Vector3 relativePos = transform.InverseTransformPoint( new Vector3( go.transform.position.x, go.transform.position.y, go.transform.position.z  ) );
+								float magnitude = relativePos.magnitude;
+								float direction = Mathf.Abs(relativePos.x);
+
+								if ( go.transform.position.z < min){//lbh dpn posisiny
+									bestCandidateCoord = magnitude+direction;
+									bestCandidatePlayer = go;	
+									min =  go.transform.position.z;
+								}
+							}
+						}
+					}
 				}
 				
 				if ( bestCandidateCoord != 1000.0f ) {
-					
+					Debug.Log(gameObject.name + " pass to " + bestCandidatePlayer.name);
+
+//					GameObject s = sphere.GetComponent<Sphere>().gameObject;
+//					BoxCollider bc = (BoxCollider) s.AddComponent("BoxCollider");
+//					bc.center = sphere.transform.position;
+//					bc.size = new Vector3(10,10,10);
+					//coba bikin collider buat test bolany bkl diblok kaga, tp kykny malah kna jd throwin trs bolany melayang
+
+					Vector3 relPos = transform.InverseTransformPoint( bestCandidatePlayer.transform.position );
+					inputSteer = relPos.x / relPos.magnitude;
+					transform.Rotate(0, inputSteer*20.0f , 0);
+					collider.enabled = false;
+
+					animation.Play("pass");
 					sphere.inputPlayer = bestCandidatePlayer;//set pemaen yg diselected itu yg terdekat
 					Vector3 directionBall = (bestCandidatePlayer.transform.position - transform.position).normalized;//itung arah bola biar bs ngarah ke penerima passer,caranya set sumbu x velocity bola sesuai direction
-					float distanceBall = (bestCandidatePlayer.transform.position - transform.position).magnitude*1.4f;//itung jarak total bola dr sumbu x,y,z
+					float distanceBall = (bestCandidatePlayer.transform.position - transform.position).magnitude*1.1f;//itung jarak total bola dr sumbu x,y,z
 					distanceBall = Mathf.Clamp( distanceBall, 15.0f, 40.0f );//jarak max passing 40
 					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(directionBall.x*distanceBall, distanceBall/5.0f, directionBall.z*distanceBall );
-					Debug.Log(gameObject.name + " pass to " + bestCandidatePlayer.name);
+
 				} else {
-					//klo ga ada penerima yg layak
-					//sphere.gameObject.GetComponent<Rigidbody>().velocity = transform.forward*20.0f;
-					goToDestination(goalPosition.position);
+					//klo ga ada penerima yg layak (khusus player krn enemy klo ga ad tmn pst pass k yg plg dpn)
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = transform.forward*20.0f;
 				}
+					
 			}
 			break;
 		case Player_State.GO_ORIGIN:
-			if (type == TypePlayer.DEFENDER || type == TypePlayer.ATTACKER || inGame.state != InGameState_Script.InGameState.PLAYING) {//klo lg goalkick,dll ttp hrs balik
+			if (type == TypePlayer.DEFENDER 
+			    || (type == TypePlayer.ATTACKER && sphere.lastOwner.tag != gameObject.tag) //go origin klo last touchny emg dr td tim musuh
+			    || inGame.state != InGameState_Script.InGameState.PLAYING) {//klo lg goalkick,dll ttp hrs balik
 				animation.Play("running");
 				Vector3 RelativeWaypointPosition = transform.InverseTransformPoint(new Vector3( 
 				                                                                               initialPosition.x, 
@@ -568,25 +609,27 @@ public class Player_Script : MonoBehaviour {
 				if(sphere.owner && tag ==  sphere.owner.tag) {
 					hisTeamOnAttack = true;
 				} 
-				Debug.Log(name + "'s team is on attack : " + hisTeamOnAttack);
-				//Debug.Log("owner : " + sphere.owner.tag + ", thisPlayer tag : " + gameObject.tag + ", attack = " + hisTeamOnAttack);
+				//aaDebug.Log(name + "'s team is on attack : " + hisTeamOnAttack);
 				if(!hisTeamOnAttack || attackingPos.z == 0){//klo attackingpos ga diset, atau lagi bertahan, kejer bola aj	
 					if(enemyMarked != null && type != TypePlayer.ATTACKER){//klo pny musuh yg perlu dimark
-						Debug.Log(name + " marking " + enemyMarked.name);
-						Debug.Log(name + " doing marking");
+						//aaDebug.Log(name + " marking " + enemyMarked.name);
 						//diem aj klo emg ga lg nyerang ato keujung zona dktin bola, kecuali zonany di breach
 						//animation.Play("rest");
 						goToDestination(sphere.transform.position);
 						//state = Player_State.MARK_ENEMY;//ngebug orgny cmn lari ditempat
-						//goToDestinationWithoutDistance(originMarked.transform.position);//klo di test 2vs2 ud bener,tp klo full team msh error, suaka maju smua pemaennya
+						//goToDestination(originMarked.transform.position);//klo di test 2vs2 ud bener,tp klo full team msh error, suaka maju smua pemaennya
 					} else{ // casenya attacker, ga perlu kejar bola
-						state = Player_State.GO_ORIGIN;
+						if(sphere.lastOwner.tag != gameObject.tag){
+							state = Player_State.GO_ORIGIN;
+						} else {
+							goToDestination(attackingPos); //klo striker ini abis pass/ shoot ttp hrs maju k attackpos
+						}
 						//Debug.Log(name + " going after ball");
-						//goToDestinationWithoutDistance(sphere.transform.position);
+						//goToDestination(sphere.transform.position);
 					}
 				}
 				else {//klo bola lg ditim kita,pemaen lari ke tujuan masing"
-					Debug.Log(name + " going to attacking pos (" + attackingPos.x + "," + attackingPos.z + ")");
+					//aaDebug.Log(name + " going to attacking pos (" + attackingPos.x + "," + attackingPos.z + ")");
 					goToDestination(attackingPos);
 				}
 				
@@ -597,12 +640,11 @@ public class Player_Script : MonoBehaviour {
 			
 			
 		case Player_State.RESTING:
-			//TODO CEK ATTACKERNYA BEHAVIOURNYA BNR KAGA
 			transform.LookAt( new Vector3( sphere.GetComponent<Transform>().position.x, transform.position.y ,sphere.GetComponent<Transform>().position.z)  );
 			animation.Play("rest"); 		  
-			if(type != TypePlayer.DEFENDER && sphere.owner.tag == gameObject.tag){
+			if(type != TypePlayer.DEFENDER && sphere.owner && sphere.owner.tag == gameObject.tag){
 				state = Player_State.MOVE_AUTOMATIC;
-			} else if(type == TypePlayer.DEFENDER && sphere.owner == gameObject){//klo bekny kebetulan pegang bola, kyk lg KO ga blh diem aj
+			} else if(type == TypePlayer.DEFENDER && sphere.owner && sphere.owner == gameObject){//klo bekny kebetulan pegang bola, kyk lg KO ga blh diem aj
 				state = Player_State.MOVE_AUTOMATIC;
 			}
 			break;
@@ -635,13 +677,9 @@ public class Player_Script : MonoBehaviour {
 			
 			
 		case Player_State.STOLE_BALL://buat GK ambil bola ato player mw rebut bola
+			collider.enabled = true;
 			if((sphere.owner == null || sphere.owner.tag != gameObject.tag)){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
 
-				/*
-						Vector3 rp =  sphere.transform.position-transform.position;//cara lain buat rotate antara 2 titik,hasil sama aj
-						Quaternion rotate = Quaternion.LookRotation(rp);
-						transform.Rotate (0,rotate.y,0);
-						*/
 				Vector3 relPos = transform.InverseTransformPoint( sphere.transform.position );
 				inputSteer = relPos.x / relPos.magnitude;
 				transform.Rotate(0, inputSteer*20.0f , 0);
@@ -764,51 +802,7 @@ public class Player_Script : MonoBehaviour {
 		}
 		
 	}
-	void goToDestinationWithoutDistance (Vector3 destination){
-				float distanceToDestination = (destination - transform.position).magnitude;
-				Vector3 direction = (destination - transform.position).normalized;//klo jarak trs di normalized jg bs buat nentuin arah slaen x/magnitude
-				Vector3 posFinal;
-				if (destination == sphere.transform.position) {
-						posFinal = initialPosition + (direction * maxDistanceFromPosition); //cari jarak terjauh yg dibolehin pmaen itu bwt lari k situ,dgn arah sesuai bola
-				} else {
-						posFinal = destination;
-				}
-				Vector3 RelativeWaypointP = new Vector3 (posFinal.x, posFinal.y, posFinal.z);
-				if (distanceToDestination > 0f) {//lari trs ke arah bola
-						RelativeWaypointP = transform.InverseTransformPoint (new Vector3 (//itung jarak posisi terjauh yg dibolehin dgn posisi skrg
-				                                                                  posFinal.x, 
-				                                                                  posFinal.y, 
-				                                                                  posFinal.z));
-				
-			
-			
-						inputSteer = RelativeWaypointP.x / RelativeWaypointP.magnitude;
-			
-						if (inputSteer == 0 && RelativeWaypointP.z < 0)
-								inputSteer = 10.0f;
-			
-						if (inputSteer > 0.0f)
-								transform.Rotate (0, inputSteer * 20.0f, 0);
-			
-			
-						if (RelativeWaypointP.magnitude < 0.5f) {//cek klo posisi pmaen ud dkt
-				
-								transform.LookAt (new Vector3 (sphere.GetComponent<Transform> ().position.x, transform.position.y, sphere.GetComponent<Transform> ().position.z));//liat ke bola
-								animation.Play ("rest");		
-								timeToRemove = 0.0f;
-				
-						} else {			
-				
-				
-								if (timeToRemove > 1.0f) {					
-										animation.Play ("running");
-										float staminaTemp2 = Mathf.Clamp ((stamina / STAMINA_DIVIDER), STAMINA_MIN, STAMINA_MAX);
-										transform.position += transform.forward * 5.5f * Time.deltaTime * staminaTemp2 * Speed;
-								}
-						}
-		
-				}
-	}
+
 	void goToDestination (Vector3 destination){
 		float distanceToDestination = (destination - transform.position).magnitude;
 		Vector3 direction = (destination - transform.position).normalized;//klo jarak trs di normalized jg bs buat nentuin arah slaen x/magnitude
@@ -896,6 +890,7 @@ public class Player_Script : MonoBehaviour {
 	}
 
 	float calculateFriendDistanceToNearestEnemy(GameObject go){
+		//TODO kliatannya msh ngebug
 		float minDistance = 1000.0f;
 
 		if (gameObject.tag == "PlayerTeam1") {

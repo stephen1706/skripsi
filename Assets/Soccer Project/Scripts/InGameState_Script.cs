@@ -610,9 +610,10 @@ public class InGameState_Script : MonoBehaviour {
 						isKickOff = true;
 					}
 					else{
-						int index = UnityEngine.Random.Range(0,4);//changeed
+						//yg kickoff dr team player itu nmr 2 ama 8 krn dy striker
+						int index = 2;
 						passer = players[index].GetComponent<Player_Script>();
-						int index2 = UnityEngine.Random.Range(5,9);
+						int index2 = 8;
 						passed = players[index2].GetComponent<Player_Script>();
 
 						passer.transform.position = sphere.transform.position + new Vector3( 0.0f, 0, 1.0f );//set posisi penendang
@@ -633,9 +634,9 @@ public class InGameState_Script : MonoBehaviour {
 						sphere.owner = passer_opponent.gameObject;
 						isKickOff = true;
 					}else{
-						int index = UnityEngine.Random.Range(0,4);
+						int index = 5;
 						passer_opponent = opponents[index].GetComponent<Player_Script>();
-						int index2 = UnityEngine.Random.Range(5,9);
+						int index2 = 6;
 						passed_opponent = opponents[index2].GetComponent<Player_Script>();
 
 						passer_opponent.transform.position = sphere.transform.position + new Vector3( 0.0f, 0, -1.0f );

@@ -36,8 +36,10 @@ public class Sphere : MonoBehaviour {
 	public InGameState_Script inGame;
 	public float timeShootButtonPressed = 0.0f;
 
+	public GameObject lastOwner;
 
 	void Start () {
+		whoMarkedMe = new ArrayList ();
 		players = GameObject.FindGameObjectsWithTag("PlayerTeam1");		
 		oponents = GameObject.FindGameObjectsWithTag("OponentTeam");
 		joystick = GameObject.FindGameObjectWithTag("joystick").GetComponent<Joystick_Script>();
@@ -78,7 +80,9 @@ public class Sphere : MonoBehaviour {
 				
 	
 		if ( owner ) {//klo bolany pny owner, bikin biar bolany nempel dikaki player
-				
+			
+			lastOwner = owner;
+
 	 		transform.position = owner.transform.position + owner.transform.forward/1.5f + owner.transform.up/5.0f; //set posisi bola jd nempel ama pemiliknya
 			float velocity = owner.GetComponent<Player_Script>().actualVelocityPlayer.magnitude;//iktin speed pemiliknya
 			
