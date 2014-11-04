@@ -230,20 +230,11 @@ public class GoalKeeper_Script : MonoBehaviour {
 			
 					state = GoalKeeper_State.RESTING;					
 				}
-		
-			
-			
 			break;
-			
-			
-			
 		}
 		
 	}
-	
-	
-	
-	// To know if GoalKeeper is touching Ball
+
 	void OnCollisionStay( Collision coll ) {//saat GK msh pegang bola
 		
 		if ( Camera.main.GetComponent<InGameState_Script>().state == InGameState_Script.InGameState.PLAYING ) {
@@ -253,7 +244,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 				 state != GoalKeeper_State.JUMP_LEFT_DOWN && state != GoalKeeper_State.JUMP_RIGHT_DOWN) {//klo GK pegang bola
 							
 				Camera.main.GetComponent<InGameState_Script>().lastTouched = gameObject;//set yg pegang bola itu kiper
-			
+				sphere.lastOwner = gameObject;	
 	
 				Vector3 relativePos = transform.InverseTransformPoint( sphere.gameObject.transform.position );
 

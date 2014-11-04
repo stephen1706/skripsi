@@ -104,9 +104,6 @@ public class InGameState_Script : MonoBehaviour {
 
 		// Load Team textures 
 		LoadTeams ();
-
-
-
 	}
 
 	void LoadTeams ()//load texture warna pemaen dr preference

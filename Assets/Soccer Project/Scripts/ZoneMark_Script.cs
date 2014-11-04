@@ -31,7 +31,7 @@ public class ZoneMark_Script : MonoBehaviour {
 				other.gameObject.GetComponent<Player_Script>().whoMarkedMe = zoneOwner;
 			}
 			//aaDebug.Log(zoneOwner.name + "'s zone breach by " + other.gameObject.name);
-		} else if(other.gameObject.tag == "Ball"){
+		} else if(other.gameObject.tag == "Ball" && zoneOwner.GetComponent<Player_Script>().type != Player_Script.TypePlayer.ATTACKER){
 			if(sphere.whoMarkedMe.Count < 1 && sphere.owner && sphere.owner.tag != gameObject.tag){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
 				if(!sphere.whoMarkedMe.Contains(gameObject)){
 					sphere.whoMarkedMe.Add(gameObject);
@@ -57,8 +57,13 @@ public class ZoneMark_Script : MonoBehaviour {
 		} else if(other.gameObject == zoneOwner){//klo lg lari kejer bola tp ud kepentok zonany
 			zoneOwner.GetComponent<Player_Script> ().timeToStopRest = 0;
 			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.RESTING;
-			//TODO jd bug krn klo ud ampe ujung cmn rest selamanya, klo arah bola pindah, dy ttp rest kg iktin pergerakannya
 		}
 		
 	}
+
+//	void OnTriggerStay(Collider other) {
+//		if (other.gameObject.tag == "Ball") {
+//			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.STOLE_BALL_NO_CHECK;
+//		}
+//	}
 }

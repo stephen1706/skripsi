@@ -2,10 +2,6 @@ using UnityEngine;
 using System.Collections;
 
 public class Shadow_Script : MonoBehaviour {
-	
-	
-	//public Vector3 prueba;
-	
 	// Use this for initialization
 	void Start () {
 	

@@ -8,8 +8,7 @@ public class Goal_Script : MonoBehaviour {
 	public InGameState_Script ingame;
 	public MeshFilter red;
 	private Vector3[] arrayOriginalVertices;	
-	
-	// Use this for initialization
+
 	void Start () {
 		// get ball  in scene
 		sphere = (Sphere)GameObject.FindObjectOfType( typeof(Sphere) );	
@@ -60,8 +59,6 @@ public class Goal_Script : MonoBehaviour {
 	}
 	void OnTriggerStay( Collider other ) {//buat gerakin jaring klo bola masuuk,dipanggil saat bola ada didalem trigger/gawang
 	
-		
-		// Deform the net ( if you are working for web/standalone you could use real cloth
 		if ( other.gameObject.tag == "Ball" ) {
 
 			Mesh meshRed = red.mesh;
@@ -84,45 +81,17 @@ public class Goal_Script : MonoBehaviour {
 				
 				
 					if (  Vector3.Dot( dirLocal, meshRed.normals[i] ) > 0.0f  ) {
-				
-		
-//						float tension = 0.0f;
-//						Color color;
-						if (distance <= 3.0 && distance > 2.0f) {
-//							tension = 1.5f;
-//							color = Color.red;
-						}
-
-						if (distance <= 2.0 && distance > 1.0f) {
-//							tension = 0.5f;
-//							color = Color.green;
-
-						}
-					
-						if (distance <= 1.0 && distance >= 0.0f) {
-//							tension = 0.1f;
-//							color = Color.blue;
-
-						}
-					
 						Vector3 finalLocal = sourceLocal + (dirLocal/(distance+0.1f));
 						arrayVertices[i] = finalLocal; 
-
-					
 					} else {
 						arrayVertices[i] = arrayOriginalVertices[i];					
 					}
 					
 				} else {
-				
 					arrayVertices[i] = arrayOriginalVertices[i];
 				}
-				
-				
-				
+
 			}
-		
-		
 			meshRed.vertices = arrayVertices;
 		
 		}		

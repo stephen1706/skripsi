@@ -8,9 +8,6 @@ public GameObject sphere;
 
 	void Update () {//buat nerima pass button di hp
 
-
-		// control touch input for mobile devices
-
 		for (int touchIndex = 0; touchIndex<Input.touchCount; touchIndex++){
       		Touch currentTouch = Input.touches[touchIndex];//proses setiap touch
       		if(currentTouch.phase == TouchPhase.Ended && guiTexture.HitTest(currentTouch.position)){
