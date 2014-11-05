@@ -61,9 +61,9 @@ public class ZoneMark_Script : MonoBehaviour {
 		
 	}
 
-//	void OnTriggerStay(Collider other) {
-//		if (other.gameObject.tag == "Ball") {
-//			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.STOLE_BALL_NO_CHECK;
-//		}
-//	}
+	void OnTriggerStay(Collider other) {
+		if (other.gameObject.tag == "Ball") {
+			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.STOLE_BALL_NO_CHECK;
+		}
+	}
 }

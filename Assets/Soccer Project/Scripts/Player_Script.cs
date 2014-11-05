@@ -49,6 +49,7 @@ public class Player_Script : MonoBehaviour {
 		SHOOTING,
 		MOVE_AUTOMATIC,
 		ONE_STEP_BACK,
+		STOLE_BALL_NO_CHECK,
 		STOLE_BALL,
 		OPONENT_ATTACK,
 		PICK_BALL,
@@ -685,9 +686,28 @@ public class Player_Script : MonoBehaviour {
 				}
 			}
 
-			if((sphere.owner == null || sphere.lastOwner.tag != gameObject.tag)){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
+			if(/*!otherPlayerAlsoStoleBall && */(sphere.owner == null || sphere.lastOwner.tag != gameObject.tag)){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
 				//TODO HARUS DICEK APAKAH UDA ADA TEMEN LAEN YG STOLE BALL JG
 			
+				Vector3 relPos = transform.InverseTransformPoint( sphere.transform.position );
+				inputSteer = relPos.x / relPos.magnitude;
+				transform.Rotate(0, inputSteer*20.0f , 0);
+				
+				animation.Play("running");
+				float staminaTemp3 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
+				transform.position += transform.forward*4.5f*Time.deltaTime*staminaTemp3*Speed;
+			} else{
+				state = Player_State.MOVE_AUTOMATIC;
+			}
+
+			break;
+			
+		case Player_State.STOLE_BALL_NO_CHECK:
+			collider.enabled = true;
+
+			
+			if(!sphere.owner || sphere.owner.tag != gameObject.tag){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
+
 				Vector3 relPos = transform.InverseTransformPoint( sphere.transform.position );
 				inputSteer = relPos.x / relPos.magnitude;
 				transform.Rotate(0, inputSteer*20.0f , 0);
@@ -702,8 +722,7 @@ public class Player_Script : MonoBehaviour {
 			
 			
 			break;
-			
-	
+
 		case Player_State.MARK_ENEMY://changed
 			//TODO hrs cek biar kg kluar dr zonanya
 			if(sphere.owner && sphere.owner.tag != tag){//mark enemy ngebug lari ditempat karena loop ke mark enemy trs move auto trs blk lg
