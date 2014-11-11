@@ -75,7 +75,7 @@ public class ZoneMark_Script : MonoBehaviour {
 
 	void OnTriggerStay(Collider other) {
 		if (other.gameObject.tag == "Ball") {
-			if(inGame.state == InGameState_Script.InGameState.PLAYING && sphere.gameObject.GetComponent<Rigidbody>().isKinematic){
+			if(inGame.state == InGameState_Script.InGameState.PLAYING && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == false){
 				//biar wkt bola di tgn kiper dan lg goal kick kg dikejar" bolany
 				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.STOLE_BALL_NO_CHECK;
 			}
