@@ -47,37 +47,31 @@ public class ZoneMark_Script : MonoBehaviour {
 		}
 
 	}
-	void OnTriggerExit(Collider other){
+	void OnTriggerExit(Collider other){//exit itu trnyt dipanggil tiap x diluar zona, bkn saat kluar zona doang
 		if (other.gameObject.tag == "PlayerTeam1" && zoneOwner.tag == "OponentTeam" || 
 		    other.gameObject.tag == "OponentTeam" && zoneOwner.tag == "PlayerTeam1" ) {
 			if(other.gameObject.GetComponent<Player_Script>().whoMarkedMe == zoneOwner){
-				if(zoneOwner.GetComponent<Player_Script> ().enemyMarked != zoneOwner.GetComponent<Player_Script> ().originMarked){//changed 11-11-14,bikin jd pemaen tngh lgsg maju walopun blm msk zona
-					other.gameObject.GetComponent<Player_Script>().whoMarkedMe = null;
-					if(sphere.owner != zoneOwner){//changed 11-11-14
-						zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MOVE_AUTOMATIC;
-					} 
-				}
 				zoneOwner.GetComponent<Player_Script> ().enemyMarked = zoneOwner.GetComponent<Player_Script> ().originMarked;
+				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MOVE_AUTOMATIC;
+				other.gameObject.GetComponent<Player_Script>().whoMarkedMe = null;
 			}
 
 		} else if(other.gameObject.tag == "Ball"){
 			sphere.whoMarkedMe.Remove(gameObject);
-			if(sphere.owner != zoneOwner){//changed 11-11-14
-				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MOVE_AUTOMATIC;
-			}
-		} 
-//		else if(other.gameObject == zoneOwner){//klo lg lari kejer bola tp ud kepentok zonany
-//			zoneOwner.GetComponent<Player_Script> ().timeToStopRest = 0;//changed 11-11-14
-//			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.RESTING;
-//		}
+			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MOVE_AUTOMATIC;
+		} else if(other.gameObject == zoneOwner){//klo lg lari kejer bola tp ud kepentok zonany
+			zoneOwner.GetComponent<Player_Script> ().timeToStopRest = 0;
+			zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.RESTING;
+		}
 		
 	}
 
 	void OnTriggerStay(Collider other) {
 		if (other.gameObject.tag == "Ball") {
 			if(inGame.state == InGameState_Script.InGameState.PLAYING && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == false){
-				//biar wkt bola di tgn kiper dan lg goal kick kg dikejar" bolany
 				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.STOLE_BALL_NO_CHECK;
+			} else{
+				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.GO_ORIGIN;
 			}
 		}
 	}
