@@ -74,7 +74,7 @@ public class Sphere : MonoBehaviour {
 		if ( bShootButton ) {
 			timeShootButtonPressed += Time.deltaTime;
 		
-		} else {
+		} else {//kemgknan logicny slh, makany shoot button slalu 0 timeny
 			timeShootButtonPressed = 0.0f;
 		}
 				

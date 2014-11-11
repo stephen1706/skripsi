@@ -283,14 +283,14 @@ public class Player_Script : MonoBehaviour {
 		animation.Play("running_ball");
 		Vector3 RelativeWaypointPosition = transform.InverseTransformPoint(goalPosition.position);
 		inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//cr arah gawang dimana
-		transform.Rotate(0, inputSteer*10.0f , 0);//rotate player biar ke arah gawang,pdhl bs jg pk Mathf.Asin(inputsheer)
+		transform.Rotate(0, inputSteer*20.0f , 0);//rotate player biar ke arah gawang,pdhl bs jg pk Mathf.Asin(inputsheer)
 		float staminaTemp = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
 		transform.position += transform.forward*4.0f*Time.deltaTime*staminaTemp*Speed;
 		
 		timeToPass -= Time.deltaTime;
 		
 		if ( timeToPass < 0.0f && SomeoneInFront(players) &&/* SomeoneInFront( oponents ) && */ detectDistanceToNearestEnemy() < 5.0f) {//klo ud saatnya passing dan msh ada musuh di depannya jd pass aja
-			//timeToPass = UnityEngine.Random.Range( 1.0f, 5.0f);	//set wkt utk pass selanjutnya
+
 			timeToPass = 0.5f;
 			Debug.Log("harus pass");
 			state = Player_State.PASSING;
@@ -499,6 +499,7 @@ public class Player_Script : MonoBehaviour {
 							    && calculateFriendDistanceToNearestEnemy(go) > 10.0f) {//syarat terakhir itu buat tmnny hrs bebas dr musuh jg
 								if(bestCandidatePlayer){
 									if(bestCandidatePlayer.transform.position.z > go.transform.position.z){
+										//TODO jd kontradiksi, hrs terdkt dr gawang dan terdkt dr player
 										bestCandidateCoord = magnitude+direction;
 										bestCandidatePlayer = go;		
 									}
@@ -600,11 +601,19 @@ public class Player_Script : MonoBehaviour {
 			// cr jarak player ke bola
 			float distanceBall = (transform.position - sphere.transform.position).magnitude;
 			float distanceToAttackingPos = (transform.position - attackingPos).magnitude;
-			
+			if(tag == "OponentTeam" && sphere.owner && sphere.owner == gameObject){
+				//bug klo bek yg pegang bola, stateny malah jd go_origin bkn oponent_attack
+				state = Player_State.OPONENT_ATTACK;
+				break;
+			}
 			// klo jarak player jauh bgt dr posisi originnya, return ke posisi awal aja
 			if ( distanceBall > maxDistanceFromPosition && type == TypePlayer.DEFENDER ) {
 				//TODO klo ad bola lg kosong msk k zona bek, ttp kg diambil, malah go origin
-				state = Player_State.GO_ORIGIN;
+				if(tag == "OponentTeam" && sphere.owner && sphere.owner == gameObject){
+					state = Player_State.OPONENT_ATTACK;
+				} else{
+					state = Player_State.GO_ORIGIN;
+				}
 			} // klo jaraknya ga terlalu jauh,lari ke arah bola aja
 			else {	
 				bool hisTeamOnAttack = false;
@@ -620,8 +629,10 @@ public class Player_Script : MonoBehaviour {
 					} else{ // casenya attacker, ga perlu kejar bola
 						if(sphere.lastOwner.tag != gameObject.tag){
 							state = Player_State.GO_ORIGIN;
-						} else {
+						} else if(attackingPos.z != 0){
 							goToDestination(attackingPos); //klo striker ini abis pass/ shoot ttp hrs maju k attackpos
+						} else {
+							state = Player_State.GO_ORIGIN;
 						}
 						//Debug.Log(name + " going after ball");
 					}
@@ -642,7 +653,7 @@ public class Player_Script : MonoBehaviour {
 			if(type != TypePlayer.DEFENDER && sphere.owner && sphere.owner.tag == gameObject.tag){
 				state = Player_State.MOVE_AUTOMATIC;
 			} else if(type == TypePlayer.DEFENDER && sphere.owner && sphere.owner == gameObject){//klo bekny kebetulan pegang bola, kyk lg KO ga blh diem aj
-				state = Player_State.MOVE_AUTOMATIC;
+				state = Player_State.OPONENT_ATTACK;//changed 11-11-14
 			}
 			break;
 
