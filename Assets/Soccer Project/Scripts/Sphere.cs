@@ -101,8 +101,11 @@ public class Sphere : MonoBehaviour {
 			ActivateNearestPlayer();
 	
 			if ( !owner || owner.tag == "PlayerTeam1" ){
-				ActivateNearestOpponent(); //TEMPORARILY OFF, KARENA UD PK ZONE TRIGGER, bikin ancur klo diaktifin,org jd lari ditempat
-			
+				if(lastOwner && lastOwner.tag == "GoalKeeper"){
+				} else{
+
+					ActivateNearestOpponent(); //TEMPORARILY OFF, KARENA UD PK ZONE TRIGGER, bikin ancur klo diaktifin,org jd lari ditempat
+				}
 			}
 		
 		}
