@@ -1,16 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Soccer Project/Scripts/GoalKeeper_Script.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Soccer Project/Scripts/Sphere.cs">
     <Files>
-      <File FileName="Assets/Soccer Project/Scripts/Player_Script.cs" Line="863" Column="38" />
-      <File FileName="Assets/Soccer Project/Scripts/ZoneMark_Script.cs" Line="70" Column="2" />
-      <File FileName="Assets/Soccer Project/Scripts/Sphere.cs" Line="124" Column="92" />
-      <File FileName="Assets/Soccer Project/Scripts/GoalKeeper_Script.cs" Line="39" Column="53" />
-      <File FileName="Assets/Soccer Project/Scripts/InGameState_Script.cs" Line="31" Column="12" />
-      <File FileName="Assets/Soccer Project/Scripts/Shoot_Script.cs" Line="1" Column="1" />
-      <File FileName="Assets/Soccer Project/Scripts/Corner_Script.cs" Line="1" Column="1" />
-      <File FileName="Assets/Soccer Project/Scripts/GoalKeeperJump.cs" Line="1" Column="1" />
-      <File FileName="Assets/Soccer Project/Scripts/Area_Script.cs" Line="1" Column="1" />
+      <File FileName="Assets/Soccer Project/Scripts/Sphere.cs" Line="79" Column="28" />
+      <File FileName="Assets/Soccer Project/Scripts/Player_Script.cs" Line="833" Column="44" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
