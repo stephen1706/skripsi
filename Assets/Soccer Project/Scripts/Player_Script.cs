@@ -434,8 +434,10 @@ public class Player_Script : MonoBehaviour {
 				sphere.lastOwner = gameObject;
 				
 				if ( gameObject.tag == "PlayerTeam1" ) {
-					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x*30.0f, 5.0f, transform.forward.z*30.0f );
+					sphere.timeShootButtonPressed = Mathf.Clamp(sphere.timeShootButtonPressed,0,0.5f);//max 0.5detik krn bar ud full
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, sphere.timeShootButtonPressed * 30.0f, transform.forward.z*30.0f);//TODO bisa x dirandom sama z ksh pengaruh dr power pemain
 					barPosition = 0;//munculin shooting bar
+					sphere.timeShootButtonPressed = 0;
 					//TODO PERGUNAIN POWER SHOOT DI KOORDINAT Y,tp slalu 0 ntah knp lengthpressnya yg di class sphere
 				}
 				else {

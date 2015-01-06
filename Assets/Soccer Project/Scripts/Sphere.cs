@@ -73,9 +73,12 @@ public class Sphere : MonoBehaviour {
 		
 		if ( bShootButton ) {
 			timeShootButtonPressed += Time.deltaTime;
-		
+			Debug.Log("lama press : " + timeShootButtonPressed);
 		} else {//kemgknan logicny slh, makany shoot button slalu 0 timeny
-			timeShootButtonPressed = 0.0f;
+			//timeShootButtonPressed = 0.0f;
+			if(owner && owner.tag != "PlayerTeam1"){
+				timeShootButtonPressed = 0.0f;
+			}
 		}
 				
 	
