@@ -8,15 +8,13 @@ public class ScorerTimeHUD : MonoBehaviour {
 	public int seconds = 0;
 	public float TRANSFORM_TIME = 1.0f;
 	private InGameState_Script inGame;
-	
-	// Use this for initialization
+
 	void Start () {
 	
 		inGame = GameObject.FindObjectOfType( typeof( InGameState_Script ) ) as InGameState_Script;		
 		
 	}
-	
-	// Update is called once per frame
+
 	void Update ()
 	{
 		if (inGame.state == InGameState_Script.InGameState.PLAYING) {	

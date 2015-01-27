@@ -53,7 +53,8 @@ public class Sphere : MonoBehaviour {
 
 	}
 
-	void Update () {
+	void Update () {//dapetin kontrol dari pemain, bikin pemain yang lagi dikontrol itu jd statenya controlling
+		//terus buat yg gerakin dipanggil dari method case_controlling di player_Script
 		fVertical = Input.GetAxis("Vertical");
 		fHorizontal = Input.GetAxis("Horizontal");
 
@@ -82,7 +83,8 @@ public class Sphere : MonoBehaviour {
 			
 			lastOwner = owner;
 
-	 		transform.position = owner.transform.position + owner.transform.forward/1.5f + owner.transform.up/5.0f; //set posisi bola jd nempel ama pemiliknya
+	 		transform.position = owner.transform.position + owner.transform.forward/1.5f + owner.transform.up/5.0f; 
+			//set posisi bola jd nempel ama pemiliknya
 			float velocity = owner.GetComponent<Player_Script>().actualVelocityPlayer.magnitude;//iktin speed pemiliknya
 			
 			if ( fVertical == 0.0f && fHorizontal == 0.0f  && owner.tag == "PlayerTeam1" ) {//klo pemiliknya player dan pemiliknya lg diem
@@ -111,7 +113,6 @@ public class Sphere : MonoBehaviour {
 		
 	}
 
-	// activate nearest oponent to ball;
 	void ActivateNearestOpponent() {//klo bolanya ga ada yg pny suruh cpu buat ngejer bolanya
 	
 		float distance = 100000.0f;
@@ -142,7 +143,7 @@ public class Sphere : MonoBehaviour {
 		
 	}
 
-	void ActivateNearestPlayer() {//ini buat select player plg dkt buat kejer bola,jadiin pmaennya yg selected skrg
+	void ActivateNearestPlayer() {//ini buat select player plg dkt buat kejer bola,jadiin pmaennya yg selected skrg dgn cara buat statenya jd controlling
 		
 		lastInputPlayer = inputPlayer;
 		
