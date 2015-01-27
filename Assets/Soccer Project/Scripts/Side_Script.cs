@@ -5,23 +5,19 @@ public class Side_Script : MonoBehaviour {
 	
 	public Sphere sphere;
 	public Vector3 direction_throwin;
-	
-	// Use this for initialization
+
 	void Start () {
 		
 		sphere = (Sphere)GameObject.FindObjectOfType( typeof(Sphere) );	//refer ke bola
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
 	
 
-	void OnTriggerEnter( Collider other) {//trigger buat deteect klo pmaen kluar lapangan
-
-
-		// Detect if Players are outside of field
+	void OnTriggerEnter( Collider other) {
+		//klo pmaen yg kluar lapangan, balikin ke posisi awalnya
 		if ( (other.gameObject.tag == "PlayerTeam1" || other.gameObject.tag == "OponentTeam") && Camera.main.GetComponent<InGameState_Script>().state == InGameState_Script.InGameState.PLAYING ) {
 		
 			if ( other.gameObject != sphere.owner ) {//klo pemaen bukan pemilik bola,bikin pmaen kaga bs diselect slama 0.5dtk
@@ -33,7 +29,7 @@ public class Side_Script : MonoBehaviour {
 			
 		}
 
-		// Detect if Ball is outside
+		//klo bola kluar lapangan
 		if ( other.gameObject.tag == "Ball" && Camera.main.GetComponent<InGameState_Script>().state == InGameState_Script.InGameState.PLAYING ) {//klo bola yg out
 			
 			sphere.owner = null;//ga ada yg pegang bola

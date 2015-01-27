@@ -11,22 +11,20 @@ public class ChooseTeam : MonoBehaviour {
 
 	public string Selected;
 	public string localOrVisit;
-	// Use this for initialization
+
 	void Start () {
 
 
 		if ( localOrVisit == "Local") {
-			Selected = "Blue";
+			Selected = "Blue";//awal yg kepilih buat tim user
 		} else {
 			Selected = "Green";
 		}
 	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
-		// control buttons in menu
 		if ( Input.GetMouseButton(0) ) {
 
 			Vector3 inputPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -35,35 +33,29 @@ public class ChooseTeam : MonoBehaviour {
 			RaycastHit2D hit;
 			hit = Physics2D.Raycast( inputPos, new Vector2( 0,0 ) );
 
-			if ( hit.collider != null ) {
+			if ( hit.collider != null ) {//klo klik mouse ad yg kena di collider logo2 timny
 
-				foreach ( ShieldMenu shield in shields ) {
+				foreach ( ShieldMenu shield in shields ) {//ShieldMenu ini objek logo2 timny, tiap logo pny script ShieldMenu
 
 					if ( hit.collider == shield.GetComponent<BoxCollider2D>() ) {
 
-						foreach ( ShieldMenu _shield in shields ) {
+						foreach ( ShieldMenu _shield in shields ) {//set smua logo ga kepilih, materialny jd default
 							_shield.renderer.material = normalMaterial; 
 						}
 
 						shield.renderer.material = selectMaterial;
-						Selected = shield.nameTeam;
+						//klo logo ini yg diklik, ganti materialny jd yg selected material, kyk ad jaring" gt materialny
+						Selected = shield.nameTeam;//ambil nama tim yg kepilih, cthnya blue
 					}
 				}
 			}
 
 			if ( hit.collider && hit.collider.tag == "playbutton" ) {
-
+				//simpen warna yg dipilih ke shared pref
 				PlayerPrefs.SetString( localOrVisit, Selected  );
 				Application.LoadLevel("Football_match");
-
 			}
-
-
 		}
-
-
-
-
 	}
 }
 

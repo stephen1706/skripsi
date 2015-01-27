@@ -6,14 +6,12 @@ public class Camera_Script : MonoBehaviour {
 	public Transform target;	//targetnya bola
 	public Vector3 targetOffsetPos;//target offset itu jarak default dr bola ke kamera
 	private Vector3 oldPos;	
-	
-	// Use this for initialization
+
 	void Start () {
 	
 	}
-	
-	// Behaviour of camera to follow the ball
-	void LateUpdate () {
+
+	void LateUpdate () {//dijalanin telat stlh smuany kelar render, kyk kamera d tv kn emg ada jeda dlm ngikutin bola
 		//klo throwin ga perlu diset kameranya krn kamera awal aj settingny,soalny wkt out jg ud kecenter lokasi outnya
 		
 		if ( GetComponent<InGameState_Script>().state == InGameState_Script.InGameState.PLAYING 
@@ -26,10 +24,10 @@ public class Camera_Script : MonoBehaviour {
 			Vector3 newPos = new Vector3( target.position.x+targetOffsetPos.x, target.position.y+targetOffsetPos.y, target.position.z+targetOffsetPos.z );
 			//set posisi kamera iktin bola + offset(jaraknya)
 			float lerpX =  Mathf.Lerp( oldPos.x, newPos.x,  0.05f );//hasil dr lerp = oldpos + 0.05*(new-old)
-			float lerpY =  Mathf.Lerp( oldPos.y, newPos.y,  0.05f );
+			float lerpY =  Mathf.Lerp( oldPos.y, newPos.y,  0.05f );//bikin kamera jd telat ikutin bolany soalny geserny cmn 5persen dr sebelumnya
 			float lerpZ =  Mathf.Lerp( oldPos.z, newPos.z,  0.05f );
 			
-			transform.position = new Vector3( lerpX, lerpY, lerpZ );		//lerp ini biar kyk broadcast kameranya, jd geraknya cmn kyk dirotate kamerany,kamerany kg gerak full	
+			transform.position = new Vector3( lerpX, lerpY, lerpZ );//lerp ini biar kyk broadcast kameranya, jd geraknya cmn kyk dirotate kamerany,kamerany kg gerak full	
 			transform.LookAt( target );//rotate ngarah ke bola
 		}
 		

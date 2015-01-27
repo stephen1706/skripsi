@@ -5,12 +5,11 @@ public class ZoneMark_Script : MonoBehaviour {
 	public GameObject zoneOwner;
 	public Sphere sphere;
 	public InGameState_Script inGame;
-	// Use this for initialization
+
 	void Start () {
 
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
@@ -18,10 +17,7 @@ public class ZoneMark_Script : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		if ((other.gameObject.tag == "PlayerTeam1" && zoneOwner.tag == "OponentTeam" && (!sphere.owner || sphere.owner.tag == "PlayerTeam1"))|| //msh rada ngebug sejak diganti ifnya jd buat yg player jg, jd bnyk yg stole ball smua. klo msh ngebug di git stash aj
 		    (other.gameObject.tag == "OponentTeam" && zoneOwner.tag == "PlayerTeam1" && (!sphere.owner || sphere.owner.tag == "OponentTeam"))){
-			//option 1 : mark enemy yg masuk ke zona dy
-			//zoneOwner.GetComponent<Player_Script> ().enemyMarked = other.gameObject;
-
-			//option 2: diemin pemaen yg bukan dy mark seharusnya, kecuali bek
+			//diemin pemaen yg bukan dy mark seharusnya, kecuali bek
 			if(zoneOwner.GetComponent<Player_Script> ().originMarked == other.gameObject){
 				zoneOwner.GetComponent<Player_Script> ().state = Player_Script.Player_State.MARK_ENEMY;
 				//keuntungan: fokus jaga siapa, kg kyk zombie ngejer bola trs

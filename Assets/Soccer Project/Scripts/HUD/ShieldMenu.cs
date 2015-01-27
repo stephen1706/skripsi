@@ -4,13 +4,11 @@ using System.Collections;
 public class ShieldMenu : MonoBehaviour {
 
 
-	public string nameTeam;
-	// Use this for initialization
+	public string nameTeam;//buat nampung nama tim, nanti nama ini yg bkl di write ke shared pref
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}

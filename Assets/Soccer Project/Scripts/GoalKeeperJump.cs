@@ -16,9 +16,7 @@ public class GoalKeeperJump : MonoBehaviour {//script dari box collider box yg d
 	}
 	
 	
-	void OnTriggerEnter( Collider other ) {//klo bolany ud depan kiper
-	
-		// Box triggers are used to know if goalkeeper need to throw to catch the ball
+	void OnTriggerEnter( Collider other ) {//klo bolany ud depan kiper, krn isTrigger true jd ga ad efek fisika wkt bola nabrak box collider ini,trs pk callbackny ontrigger bkn oncollision
 		if ( other.tag == "Ball" ) {
 					
 			Vector3 dir_goalkeeper = goalKeeper.transform.forward;//dptin arah GK dgn cara cr arah forwardnya kmn
@@ -31,7 +29,7 @@ public class GoalKeeperJump : MonoBehaviour {//script dari box collider box yg d
 			float degree = Mathf.Acos(det) * 57.0f;//dptin arah lompatnya GK,acos buat cari sudut antara GK ama bola
 			
 			if ( degree > 90.0f && degree < 270.0f && other.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 5.0f && !other.gameObject.GetComponent<Rigidbody>().isKinematic) {//klo jarak bola cukup jauh,hrs lompat		
-				//TODO blm ada code buat nepis bola
+				//is kinematic true biar efek animasi kaga kemakan efek fisikany ntr jd ngaco
 				if ( tag == "GoalKeeper_Jump_Left" ) {//klo bolanya kna trigger yg lompat kiri,berarti animasiny lompat kiri, set stateny lompat kiri jg
 				
 					goalKeeper.state = GoalKeeper_Script.GoalKeeper_State.JUMP_LEFT;

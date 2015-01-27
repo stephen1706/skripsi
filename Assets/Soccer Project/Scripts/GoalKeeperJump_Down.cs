@@ -4,21 +4,16 @@ using System.Collections;
 public class GoalKeeperJump_Down : MonoBehaviour {//sama ama yg jump up,cmn beda di play animasi yg mana
 
 	public GoalKeeper_Script goalKeeper;
-	// Use this for initialization
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
 	
 	
 	void OnTriggerEnter( Collider other ) {
-	
-
-		// Box triggers are used to know if goalkeeper need to throw to catch the ball
 		if ( other.tag == "Ball" ) {
 		
 			Vector3 dir_goalkeeper = goalKeeper.transform.forward;

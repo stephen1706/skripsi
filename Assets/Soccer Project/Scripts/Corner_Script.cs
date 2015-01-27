@@ -41,7 +41,7 @@ public class Corner_Script : MonoBehaviour {
 				
 			}
 	
-			// Chekc if is corner-kick or goal-kick
+			//cek Goal kick ato corner
 			if ( other.gameObject.tag == "Ball" && Camera.main.GetComponent<InGameState_Script>().state == InGameState_Script.InGameState.PLAYING ) {
 				
 				sphere.owner = null;
@@ -50,9 +50,7 @@ public class Corner_Script : MonoBehaviour {
 				Camera.main.GetComponent<InGameState_Script>().goal_kick = point_goalkick;
 				Camera.main.GetComponent<InGameState_Script>().goalKeeper = goalKeeper;
 				Camera.main.GetComponent<InGameState_Script>().cornerTrigger = this.gameObject;
-				
-				
-				// loonking for the near corner point
+
 				Vector3 positionBall = sphere.gameObject.transform.position;			
 				if ( (positionBall-downPosition.position).magnitude > (positionBall-upPosition.position).magnitude ) {//atur mau conrner kiri ato kanan
 					Camera.main.GetComponent<InGameState_Script>().cornerSource = upPosition;//set posisi corner diatas. upPosition itu ada object di hierarchy buat penunjuk lokasinya

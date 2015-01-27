@@ -31,8 +31,7 @@ public class Sphere : MonoBehaviour {
 	public bool pressiPhonePassButton = false;
 	[HideInInspector]	
 	public bool pressiPhoneShootButtonEnded = false;
-	
-	public Joystick_Script joystick;	
+
 	public InGameState_Script inGame;
 	public float timeShootButtonPressed = 0.0f;
 
@@ -42,7 +41,6 @@ public class Sphere : MonoBehaviour {
 		whoMarkedMe = new ArrayList ();
 		players = GameObject.FindGameObjectsWithTag("PlayerTeam1");		
 		oponents = GameObject.FindGameObjectsWithTag("OponentTeam");
-		joystick = GameObject.FindGameObjectWithTag("joystick").GetComponent<Joystick_Script>();
 		inGame = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<InGameState_Script>();
 		blobPlayerSelected = GameObject.FindGameObjectWithTag("PlayerSelected").transform;		
 	}
@@ -58,8 +56,6 @@ public class Sphere : MonoBehaviour {
 	void Update () {
 		fVertical = Input.GetAxis("Vertical");
 		fHorizontal = Input.GetAxis("Horizontal");
-		fVertical += joystick.position.y;
-		fHorizontal += joystick.position.x;
 
 		bPassButton = Input.GetKey(KeyCode.Space) || pressiPhonePassButton;
 		bShootButton = Input.GetKey(KeyCode.LeftControl) || pressiPhoneShootButton;

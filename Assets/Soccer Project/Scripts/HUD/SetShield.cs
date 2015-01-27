@@ -5,18 +5,15 @@ public class SetShield : MonoBehaviour {
 
 	public string localOrVisiting;
 
-	// Use this for initialization
 	void Start () {
-	
-		// change sprite in Shields
-		string nameTeam = PlayerPrefs.GetString( localOrVisiting );
+	//buat ganti warna logo tim
+		string nameTeam = PlayerPrefs.GetString( localOrVisiting );//ambil dr shared pref warnany
 		Sprite spr = Resources.Load<Sprite>("Textures/" + "Shield_" + nameTeam);
 		SpriteRenderer sprRenderer= (SpriteRenderer)renderer;
 		sprRenderer.sprite = spr;
 
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}

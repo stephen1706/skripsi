@@ -1,9 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Soccer Project/Scripts/Player_Script.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Soccer Project/Scripts/Shadow_Script.cs">
     <Files>
-      <File FileName="Assets/Soccer Project/Scripts/Sphere.cs" Line="77" Column="18" />
-      <File FileName="Assets/Soccer Project/Scripts/Player_Script.cs" Line="438" Column="147" />
+      <File FileName="Assets/Soccer Project/Scripts/InGameState_Script.cs" Line="694" Column="91" />
+      <File FileName="Assets/Soccer Project/Scripts/Corner_Script.cs" Line="1" Column="1" />
+      <File FileName="Assets/Soccer Project/Scripts/Sphere.cs" Line="85" Column="128" />
+      <File FileName="Assets/Soccer Project/Scripts/Shadow_Script.cs" Line="13" Column="87" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

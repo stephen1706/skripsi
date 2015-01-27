@@ -58,15 +58,13 @@ public class Player_Script : MonoBehaviour {
 		CORNER_KICK,
 		TACKLE,
 		MARK_ENEMY,
-		GET_BALL,
-		TEMPORARY_RESTING
+		GET_BALL
 	};
 	
 	public Player_State state;
 	private float timeToRemove = 3.0f;    
 	private float timeToPass = 1.0f;
-	
-	// hand of player in sque    leton hierarchy
+
 	public Transform hand_bone;
 	
 	public InGameState_Script inGame;
@@ -77,8 +75,7 @@ public class Player_Script : MonoBehaviour {
 	private Quaternion initialRotation;    
 	
 	public float stamina = 64.0f;    
-	
-	//changed
+
 	public GameObject enemyMarked;
 	public GameObject originMarked;
 	public GameObject whoMarkedMe;
@@ -123,38 +120,7 @@ public class Player_Script : MonoBehaviour {
 		
 		initialRotation = transform.rotation * headTransform.rotation;
 	}
-	
-	//        void OnTriggerEnter(Collider other){//trigger bru buat ai defense doang
-	//            //Debug.Log ("in");
-	//            if (sphere.owner && other.gameObject.tag == "Ball" && sphere.owner.tag == "PlayerTeam1") {
-	//                state = Player_State.STOLE_BALL;
-	//            //TODO hrs limit org yg ngejer bola, klo ud ad jgn dikejer lg
-	//            } else if(gameObject.tag == "OponentTeam" && other.gameObject.tag == "PlayerTeam1"){
-	//                //todo klo zonal diemin orgny, klo man to man tempel
-	//                if(!enemyMarked && type == TypePlayer.DEFENDER){//klo bek kn kg ad yg di mark, jd klo ad yg msk lgsg di mark,sbnerny bs jg ke ujung zonalnya mendekati bola
-	//                    enemyMarked = other.gameObject;
-	//                } else if(!enemyMarked && type == TypePlayer.ATTACKER){//striker kg perlu mark sapa", jd ttp kejer bola aj
-	//                    return;
-	//                }
-	//                //enemyMarked = other.gameObject;
-	//                if(state != Player_State.STOLE_BALL){
-	//                    state = Player_State.MARK_ENEMY;
-	//                }
-	//            } 
-	//        }
-	//        void OnTriggerExit(Collider other){
-	//            //Debug.Log ("out");
-	//            if (other.gameObject.tag == "Ball") {
-	//                //todo ngejer bola
-	//                state = Player_State.MOVE_AUTOMATIC;
-	//                //state = Player_State.MARK_ENEMY;
-	//            }else if(gameObject.tag == "OponentTeam" && other.gameObject.tag == "PlayerTeam1"){
-	//                //todo klo zonal diemin orgny, klo man to man tempel
-	//                if(other.gameObject == enemyMarked){//balik fokus ke awal
-	//                    enemyMarked = originMarked;
-	//                }
-	//            }
-	//        }
+
 	void Case_Controlling() {
 		
 		if ( sphere.inputPlayer == gameObject ) {//klo pemaen ini pmaen yg dikontrol user
@@ -212,14 +178,13 @@ public class Player_Script : MonoBehaviour {
 					state = Player_State.CHANGE_DIRECTION;
 					transform.forward = -transform.forward;
 					sphere.owner = null;
-					gameObject.GetComponent<CapsuleCollider>().enabled = false;
+					gameObject.GetComponent<CapsuleCollider>().enabled = false;//di buat false biar kaga mental" wkt giring bola
 					sphere.gameObject.GetComponent<Rigidbody>().AddForce(  -transform.forward.x*1500.0f, -transform.forward.y*1500.0f, -transform.forward.z*1500.0f );
 					
 				}
 				
 				
 			} else {//klo pemaenny ga dikotnrol user di suruh rest aja
-				//TODO ksh AI gerakin otomatis temen user
 				animation.Play("rest");
 			}
 			
@@ -301,7 +266,6 @@ public class Player_Script : MonoBehaviour {
 		Vector3 relative = transform.InverseTransformPoint(goalPosition.position);
 		
 		if ( distance < 20.0f && relative.z > 0 ) {//klo jaraknya ga gt jauh shoot aja
-			//TODO bisa cek buat ad bek di depannya kaga
 			state = Player_State.SHOOTING;
 			animation.Play("shoot");
 			timeToBeSelectable = 1.0f;
@@ -312,13 +276,12 @@ public class Player_Script : MonoBehaviour {
 	}
 	
 	void LateUpdate() {
-		
-		// turn head if necesary
+		//buat muter kpala pemain sesuai arah bola
 		Vector3 relativePos = transform.InverseTransformPoint( sphere.gameObject.transform.position );
 		
 		if ( relativePos.z > 0.0f ) {
 			
-			Quaternion lookRotation = Quaternion.LookRotation (sphere.transform.position + new Vector3(0, 1.0f,0) - headTransform.position);
+			Quaternion lookRotation = Quaternion.LookRotation (sphere.transform.position + new Vector3(0, 1.0f,0) - headTransform.position);//dptin arah rotasi ke arah bola
 			headTransform.rotation = lookRotation * initialRotation ;            
 			headTransform.eulerAngles = new Vector3( headTransform.eulerAngles.x, headTransform.eulerAngles.y,  -90.0f);
 			
@@ -327,10 +290,8 @@ public class Player_Script : MonoBehaviour {
 	}
 	
 	void  Update() {
-		//TODO harus buat enemy wkt nyerang nyebar, biar kaga ngerumun, trs tim kita jg jd ikt ngerumun krn saling ngejagain
-		//TODO masalhnya 1bola bisa dipunyain ama 3org enemy krn berhimpit
 		//Debug.Log ("State dari : " + name + " : " + state);
-		//aaDebug.Log ("nearest dari " + name + " : " + detectDistanceToNearestEnemy ());
+		//Debug.Log ("nearest dari " + name + " : " + detectDistanceToNearestEnemy ());
 		//        if (sphere.owner) {
 		//            Debug.Log ("owner : " + sphere.owner.tag);
 		//        }else{
@@ -438,7 +399,6 @@ public class Player_Script : MonoBehaviour {
 					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x *30.0f, sphere.timeShootButtonPressed * 30.0f, transform.forward.z*30.0f*Strong);//TODO bisa x dirandom sama z ksh pengaruh dr power pemain
 					barPosition = 0;//munculin shooting bar
 					sphere.timeShootButtonPressed = 0;
-					//TODO PERGUNAIN POWER SHOOT DI KOORDINAT Y,tp slalu 0 ntah knp lengthpressnya yg di class sphere
 				}
 				else {
 					transform.LookAt (goalPosition);//liat ke arah gawang biar kg jauh bgt melesetnya
@@ -500,7 +460,6 @@ public class Player_Script : MonoBehaviour {
 							    && calculateFriendDistanceToNearestEnemy(go) > 10.0f) {//syarat terakhir itu buat tmnny hrs bebas dr musuh jg
 								if(bestCandidatePlayer){
 									if(bestCandidatePlayer.transform.position.z > go.transform.position.z){
-										//TODO jd kontradiksi, hrs terdkt dr gawang dan terdkt dr player
 										bestCandidateCoord = magnitude+direction;
 										bestCandidatePlayer = go;        
 									}
@@ -607,13 +566,11 @@ public class Player_Script : MonoBehaviour {
 			float distanceBall = (transform.position - sphere.transform.position).magnitude;
 			float distanceToAttackingPos = (transform.position - attackingPos).magnitude;
 			if(tag == "OponentTeam" && sphere.owner && sphere.owner == gameObject){
-				//bug klo bek yg pegang bola, stateny malah jd go_origin bkn OPPONENT_ATTACK
 				state = Player_State.OPPONENT_ATTACK;
 				break;
 			}
 			// klo jarak player jauh bgt dr posisi originnya, return ke posisi awal aja
 			if ( distanceBall > maxDistanceFromPosition && type == TypePlayer.DEFENDER ) {
-				//TODO klo ad bola lg kosong msk k zona bek, ttp kg diambil, malah go origin
 				if(tag == "OponentTeam" && sphere.owner && sphere.owner == gameObject){
 					state = Player_State.OPPONENT_ATTACK;
 				} else{
@@ -625,25 +582,27 @@ public class Player_Script : MonoBehaviour {
 				if(sphere.owner && tag ==  sphere.owner.tag) {
 					hisTeamOnAttack = true;
 				} 
-				//aaDebug.Log(name + "'s team is on attack : " + hisTeamOnAttack);
+				//Debug.Log(name + "'s team is on attack : " + hisTeamOnAttack);
 				if(!hisTeamOnAttack || attackingPos.z == 0){//klo attackingpos ga diset, atau lagi bertahan, kejer bola aj    
 					if(enemyMarked != null && type != TypePlayer.ATTACKER){//klo pny musuh yg perlu dimark
-						//aaDebug.Log(name + " marking " + enemyMarked.name);
+						//Debug.Log(name + " marking " + enemyMarked.name);
 						//diem aj klo emg ga lg nyerang ato keujung zona dktin bola, kecuali zonany di breach
 						state = Player_State.MARK_ENEMY;
 					} else{ // casenya attacker, ga perlu kejar bola
 						if(sphere.lastOwner.tag != gameObject.tag){
 							state = Player_State.GO_ORIGIN;
-						} else if(attackingPos.z != 0){
+						} 
+						else if(attackingPos.z != 0){
 							goToDestination(attackingPos); //klo striker ini abis pass/ shoot ttp hrs maju k attackpos
-						} else {
+						} 
+						else {
 							state = Player_State.GO_ORIGIN;
 						}
 						//Debug.Log(name + " going after ball");
 					}
 				}
 				else {//klo bola lg ditim kita,pemaen lari ke tujuan masing"
-					//aaDebug.Log(name + " going to attacking pos (" + attackingPos.x + "," + attackingPos.z + ")");
+					//Debug.Log(name + " going to attacking pos (" + attackingPos.x + "," + attackingPos.z + ")");
 					goToDestination(attackingPos);
 				}
 			}
@@ -658,27 +617,10 @@ public class Player_Script : MonoBehaviour {
 			if(type != TypePlayer.DEFENDER && sphere.owner && sphere.owner.tag == gameObject.tag){
 				state = Player_State.MOVE_AUTOMATIC;
 			} else if(type == TypePlayer.DEFENDER && sphere.owner && sphere.owner == gameObject){//klo bekny kebetulan pegang bola, kyk lg KO ga blh diem aj
-				state = Player_State.OPPONENT_ATTACK;//changed 11-11-14
+				state = Player_State.OPPONENT_ATTACK;
 			}
 			break;
-			
-		case Player_State.TEMPORARY_RESTING://TODO masih bug bikin ngerumun
-			if(sphere.owner && sphere.owner.tag == tag){
-				state = Player_State.MOVE_AUTOMATIC;
-				break;
-			}
-			
-			if(timeToStopRest < 3.0f){
-				transform.LookAt( new Vector3( sphere.GetComponent<Transform>().position.x, transform.position.y ,sphere.GetComponent<Transform>().position.z)  );
-				animation.Play("rest");           
-			} else{
-				timeToStopRest = 0;
-				state = Player_State.MOVE_AUTOMATIC;
-			}
-			
-			timeToStopRest += Time.deltaTime;
-			break;
-			
+
 		case Player_State.ONE_STEP_BACK:
 			
 			if (animation.IsPlaying("jump_backwards_bucle") == false)//klo ud abis animasi mundurnya otomatis lg geraknya
@@ -744,10 +686,8 @@ public class Player_Script : MonoBehaviour {
 			
 			break;
 			
-		case Player_State.MARK_ENEMY://changed
-			//TODO hrs cek biar kg kluar dr zonanya
-			if(sphere.owner && sphere.owner.tag != tag){//mark enemy ngebug lari ditempat karena loop ke mark enemy trs move auto trs blk lg
-				//cara cegah loop itu, jd klo emg bolanya ud bola ditim kita bru balikin ke move enemy
+		case Player_State.MARK_ENEMY:
+			if(sphere.owner && sphere.owner.tag != tag){
 				Vector3 relPos2 = transform.InverseTransformPoint( enemyMarked.transform.position );
 				inputSteer = relPos2.x / relPos2.magnitude;
 				transform.Rotate(0, inputSteer*20.0f , 0);
@@ -772,7 +712,8 @@ public class Player_Script : MonoBehaviour {
 			
 			if ( animation.IsPlaying("tackle") ) {
 				
-				transform.position += transform.forward * (Time.deltaTime * (1.0f-animation["tackle"].normalizedTime) * 10.0f);//makin akhir animasinya makin dikit majunya
+				transform.position += transform.forward * (Time.deltaTime * (1.0f-animation["tackle"].normalizedTime) * 10.0f);
+				//makin akhir animasinya makin dikit majunya
 				
 			} else {//klo ud kelar tacklenya
 				
@@ -828,12 +769,14 @@ public class Player_Script : MonoBehaviour {
 		
 	}
 	
-	void OnGUI() {
+	void OnGUI() {//buat gbr bar diatas pemain
 		
-		if ( sphere.timeShootButtonPressed > 0.0f && sphere.inputPlayer == this.gameObject) {
+		if ( sphere.timeShootButtonPressed > 0.0f && sphere.inputPlayer == this.gameObject) {//buat gbr shoot power bar
 			
-			Vector3 posBar = Camera.main.WorldToScreenPoint( headTransform.position + new Vector3(0,0.8f,0) );//set posisi bar shot
-			GUI.DrawTexture( new Rect( posBar.x-30, (Screen.height-posBar.y), barPosition, 10 ), barTexture );//buat munculin texturenya
+			Vector3 posBar = Camera.main.WorldToScreenPoint( headTransform.position + new Vector3(0,0.8f,0) );
+			//set posisi bar shot
+			GUI.DrawTexture( new Rect( posBar.x-30, (Screen.height-posBar.y), barPosition, 10 ), barTexture );
+			//buat munculin texturenya
 			
 			barPosition = (int)(sphere.timeShootButtonPressed * 128.0f);
 			if ( barPosition >= 63 )//set max
@@ -842,7 +785,7 @@ public class Player_Script : MonoBehaviour {
 		}
 		
 		if ( sphere.owner == this.gameObject ) {//draw bar stamina
-			
+			//head transform itu posisi kepala pemain
 			Vector3 posBar = Camera.main.WorldToScreenPoint( headTransform.position + new Vector3(0,1.0f,0) );
 			GUI.DrawTexture( new Rect( posBar.x-30, (Screen.height-posBar.y), (int)stamina, 10 ), barStaminaTexture );
 			stamina -= 1.5f * Time.deltaTime;
@@ -938,7 +881,6 @@ public class Player_Script : MonoBehaviour {
 	}
 	
 	float calculateFriendDistanceToNearestEnemy(GameObject go){
-		//TODO kliatannya msh ngebug
 		float minDistance = 1000.0f;
 		
 		if (gameObject.tag == "PlayerTeam1") {

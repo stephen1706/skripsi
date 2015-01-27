@@ -27,7 +27,6 @@ public class GoalKeeper_Script : MonoBehaviour {
 	private float timeToHoldBall = 1.0f;
 	public CapsuleCollider capsuleCollider;	
 
-	// Use this for initialization
 	void Start () {
 	
 		initial_Position = transform.position;
@@ -39,11 +38,9 @@ public class GoalKeeper_Script : MonoBehaviour {
 		animation["goalkeeper_clear_left_down"].speed = 1.0f;
 	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
-		
-		
+
 		switch (state) {
 	
 			case GoalKeeper_State.JUMP_LEFT:
@@ -51,7 +48,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 				capsuleCollider.direction = 0;
 			
 				if ( animation["goalkeeper_clear_left_up"].normalizedTime < 0.45f  ) {//klo animasi blm 0.45 bagian,gerakin kiper ke kiri trs
-					transform.position -= transform.right * Time.deltaTime * 7.0f; 
+					transform.position -= transform.right * Time.deltaTime * 7.0f; //gerakin posisi kiper ke kiri
 				}
 			
 			
@@ -72,7 +69,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 				}		
 				if ( !animation.IsPlaying("goalkeeper_clear_right_up") ) {
 					state = GoalKeeper_State.STOLE_BALL;		
-					capsuleCollider.direction = 1;
+					capsuleCollider.direction = 1; //1 itu artiny direction collidernya berdasarkan y-axis
 
 				}
 				
@@ -235,8 +232,8 @@ public class GoalKeeper_Script : MonoBehaviour {
 		
 	}
 
-	void OnCollisionStay( Collision coll ) {//saat GK msh pegang bola
-		
+	void OnCollisionStay( Collision coll ) {//saat GK msh pegang bola, is triggerny off biar GK bisa collide ama efek rigidbody kiperny, ntr bs mental krn ga mgkn ada oncollisionstay klo gt
+		//klo on trigger true, callbackny ontriggerstay bkn oncollisionstay
 		if ( Camera.main.GetComponent<InGameState_Script>().state == InGameState_Script.InGameState.PLAYING ) {
 		
 			if ( coll.collider.transform.gameObject.tag == "Ball" && state != GoalKeeper_State.UP_WITH_BALL && state != GoalKeeper_State.PASS_HAND && state != GoalKeeper_State.GOAL_KICK &&

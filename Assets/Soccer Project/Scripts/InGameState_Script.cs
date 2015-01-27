@@ -88,10 +88,9 @@ public class InGameState_Script : MonoBehaviour {
 		isKickOff = true;
 	
 	}
-	// Use this for initialization
+
 	void Start () {
-	
-		// search PLayers, Oponents and goalkeepers
+
 		players = GameObject.FindGameObjectsWithTag("PlayerTeam1");
 		opponents = GameObject.FindGameObjectsWithTag("OponentTeam");
 		keeper = GameObject.FindGameObjectWithTag("GoalKeeper");
@@ -101,8 +100,6 @@ public class InGameState_Script : MonoBehaviour {
 
 		bFirstHalf = 0;	
 
-
-		// Load Team textures 
 		LoadTeams ();
 	}
 
@@ -125,15 +122,13 @@ public class InGameState_Script : MonoBehaviour {
 		}
 		return maxZ;
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
-		// kurangin wkt seblm ganti state
+		// kurangin wkt seblm ganti state, timetostatechange dipake buat reset game stlh kejebol jd kickoff, biar ada jeda, corner, throw in jg
 		timeToChangeState -= Time.deltaTime;
 		
-		if ( timeToChangeState < 0.0f ) {
-			// Handle all states related to match
+		if ( timeToChangeState < 0.0f ) {//saatny ganti state klo timernya abis
 
 			switch (state) {
 				
@@ -287,11 +282,13 @@ public class InGameState_Script : MonoBehaviour {
 					
 					candidateToThrowIn.animation["throw_in"].speed = 1.0f;
 
-					if ( candidateToThrowIn.animation["throw_in"].normalizedTime < 0.5f && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == true ) {//wkt msh stngh jalan animasiny,posisi bola msh iktin posisi tgn pelempar
+					if ( candidateToThrowIn.animation["throw_in"].normalizedTime < 0.5f && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == true ) {
+						//wkt msh stngh jalan animasiny,posisi bola msh iktin posisi tgn pelempar
 						sphere.gameObject.transform.position = candidateToThrowIn.GetComponent<Player_Script>().hand_bone.position;
 					}
 
-					if ( candidateToThrowIn.animation["throw_in"].normalizedTime >= 0.5f && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == true ) {//wkt ud lepas dr tgn bikin bola ketarik gravitasi dan gerak maju
+					if ( candidateToThrowIn.animation["throw_in"].normalizedTime >= 0.5f && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == true ) {
+						//wkt ud lepas dr tgn bikin bola ketarik gravitasi dan gerak maju
 						sphere.gameObject.GetComponent<Rigidbody>().isKinematic = false;
 						sphere.gameObject.GetComponent<Rigidbody>().AddForce( candidateToThrowIn.transform.forward*4000.0f + new Vector3(0.0f, 1300.0f, 0.0f) );					
 					} 
@@ -694,14 +691,14 @@ public class InGameState_Script : MonoBehaviour {
 			
 			if ( player.GetComponent<Player_Script>().type == type ) {
 			
-			
+				//area corner diisi secara dynamic dari corner_script, nentuin area kotak penalty mana
 				float xmin = areaCorner.GetComponent<BoxCollider>().bounds.min.x;
 				float xmax = areaCorner.GetComponent<BoxCollider>().bounds.max.x;
 				float zmin = areaCorner.GetComponent<BoxCollider>().bounds.min.z;
 				float zmax = areaCorner.GetComponent<BoxCollider>().bounds.max.z;
 				
 				float x = Random.Range( xmin, xmax );
-				float z = Random.Range( zmin, zmax );
+				float z = Random.Range( zmin, zmax );//random posisinya selama masih di dalem box
 				
 				player.transform.position = new Vector3( x, player.transform.position.y ,z);
 				

@@ -59,25 +59,13 @@
      <Compile Include="Assets\Soccer Project\Scripts\HUD\SetShield.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\HUD\ShieldMenu.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\InGameState_Script.cs" />
-     <Compile Include="Assets\Soccer Project\Scripts\Joystick_Script.cs" />
-     <Compile Include="Assets\Soccer Project\Scripts\Pass_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Player_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Shadow_Script.cs" />
-     <Compile Include="Assets\Soccer Project\Scripts\Shoot_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Side_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Sphere.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\ZoneMark_Script.cs" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Multiply Culled.shader" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Background.shader" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Transparent Vertex Color.shader" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Miscellaneous Shaders\Mobile Detail.shader" />
      <None Include="Assets\Doxygen\Editor\Resources\BaseDoxyfile.txt" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap Reflective.shader" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Particle Shaders\Mobile Particles Additive Culled.shader" />
      <None Include="Assets\Soccer Project\Documentation\ReadMe.txt" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Vertex Colored Shaders\Mobile Vertex Colored.shader" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap Only.shader" />
-     <None Include="Assets\Soccer Project\Standard Assets (Mobile)\Shaders\Lightmap Shaders (Legacy)\Mobile Lightmap AlphaTest.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -10,18 +10,15 @@ public class Goal_Script : MonoBehaviour {
 	private Vector3[] arrayOriginalVertices;	
 
 	void Start () {
-		// get ball  in scene
 		sphere = (Sphere)GameObject.FindObjectOfType( typeof(Sphere) );	
 
-		// get net vertex to modify them
 		arrayOriginalVertices = new Vector3[ red.mesh.vertices.Length ];
 		
 		for (int f=0; f< red.mesh.vertices.Length; f++) {
 			arrayOriginalVertices[f] = red.mesh.vertices[f];
 		}	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	
 	}
@@ -71,28 +68,28 @@ public class Goal_Script : MonoBehaviour {
 						
 				Vector3 worldPos = red.transform.TransformPoint( arrayOriginalVertices[i] );
 							
-				float distance = (worldPos-other.transform.position).magnitude;
+				float distance = (worldPos-other.transform.position).magnitude;//cari jarak bola dengan jaring
 				
-				if ( distance < 3.0f ) {
+				if ( distance < 3.0f ) {//klo jaraknya dkt, gerakin jaringnya
 
-					Vector3 destLocal = red.transform.InverseTransformPoint( other.transform.position );
-					Vector3 sourceLocal = arrayOriginalVertices[i];					
-					Vector3 dirLocal = (destLocal-sourceLocal);
+					Vector3 destLocal = red.transform.InverseTransformPoint( other.transform.position );//posisi jaring stlh goyang
+					Vector3 sourceLocal = arrayOriginalVertices[i];	//posisi awal jaring
+					Vector3 dirLocal = (destLocal-sourceLocal); //arah tujuan jaring bs diperoleh dari selisih, trs di dot product
 				
 				
-					if (  Vector3.Dot( dirLocal, meshRed.normals[i] ) > 0.0f  ) {
+					if (  Vector3.Dot( dirLocal, meshRed.normals[i] ) > 0.0f  ) {//klo arah jaring dan bola searah, klo berlawanan dot product jd -
 						Vector3 finalLocal = sourceLocal + (dirLocal/(distance+0.1f));
 						arrayVertices[i] = finalLocal; 
 					} else {
 						arrayVertices[i] = arrayOriginalVertices[i];					
 					}
 					
-				} else {
+				} else {//klo jarakny jauh, balikin jaring ke semula
 					arrayVertices[i] = arrayOriginalVertices[i];
 				}
 
 			}
-			meshRed.vertices = arrayVertices;
+			meshRed.vertices = arrayVertices;//update keadaan jaringnya
 		
 		}		
 		
