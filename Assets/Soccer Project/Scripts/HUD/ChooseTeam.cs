@@ -31,9 +31,9 @@ public class ChooseTeam : MonoBehaviour {
 			inputPos.z = 0;
 
 			RaycastHit2D hit;
-			hit = Physics2D.Raycast( inputPos, new Vector2( 0,0 ) );
+			hit = Physics2D.Raycast( inputPos, new Vector2( 0,0 ) );//kirim beam buat detect ada collider di titik input kaga
 
-			if ( hit.collider != null ) {//klo klik mouse ad yg kena di collider logo2 timny
+			if ( hit.collider != null ) {//klo klik mouse ad yg kena di collider logo2 timny, get collidernya, makanya dipasangin box collider di tiap logo
 
 				foreach ( ShieldMenu shield in shields ) {//ShieldMenu ini objek logo2 timny, tiap logo pny script ShieldMenu
 
@@ -51,7 +51,7 @@ public class ChooseTeam : MonoBehaviour {
 			}
 
 			if ( hit.collider && hit.collider.tag == "playbutton" ) {
-				//simpen warna yg dipilih ke shared pref
+				//simpen warna yg dipilih ke shared pref, nanti di call dari ingame state script
 				PlayerPrefs.SetString( localOrVisit, Selected  );
 				Application.LoadLevel("Football_match");
 			}

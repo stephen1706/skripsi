@@ -103,7 +103,7 @@ public class InGameState_Script : MonoBehaviour {
 		LoadTeams ();
 	}
 
-	void LoadTeams ()//load texture warna pemaen dr preference
+	void LoadTeams ()//load texture warna pemaen dr preference, get pathnya dari resources/textures folder
 	{
 		localMaterial.mainTexture = Resources.Load ("Textures/" + "player_" + PlayerPrefs.GetString ("Local") + "_texture") as Texture2D;
 		visitMaterial.mainTexture = Resources.Load ("Textures/" + "player_" + PlayerPrefs.GetString ("Visit") + "_texture") as Texture2D;

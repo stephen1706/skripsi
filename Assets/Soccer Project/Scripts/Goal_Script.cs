@@ -33,7 +33,7 @@ public class Goal_Script : MonoBehaviour {
 			goalKeeper.GetComponent<GoalKeeper_Script>().state = GoalKeeper_Script.GoalKeeper_State.GOAL_KICK;//refer goalkeeper yg di gameobject goal ini
 			goalKeeper.animation.PlayQueued("rest");
 
-			// add score depending of goal side
+			//buat tambahin score
 			if ( goalKeeper.tag == "GoalKeeper_Oponent" && ingame.state != InGameState_Script.InGameState.GOAL) {//klo GK musuh jd yg gol playernya
 				ingame.localScore++;
 				ingame.scoredByLocal = true;
@@ -54,7 +54,8 @@ public class Goal_Script : MonoBehaviour {
 		
 		
 	}
-	void OnTriggerStay( Collider other ) {//buat gerakin jaring klo bola masuuk,dipanggil saat bola ada didalem trigger/gawang
+	void OnTriggerStay( Collider other ) {
+		//buat gerakin jaring klo bola masuuk,dipanggil saat bola ada didalem trigger/gawang
 	
 		if ( other.gameObject.tag == "Ball" ) {
 
@@ -66,7 +67,7 @@ public class Goal_Script : MonoBehaviour {
 	
 			for ( int i=0; i<numberVertex; i++) {
 						
-				Vector3 worldPos = red.transform.TransformPoint( arrayOriginalVertices[i] );
+				Vector3 worldPos = red.transform.TransformPoint( arrayOriginalVertices[i] );//posisi vertice jaring skrg di posisi world scene unity
 							
 				float distance = (worldPos-other.transform.position).magnitude;//cari jarak bola dengan jaring
 				
@@ -76,8 +77,8 @@ public class Goal_Script : MonoBehaviour {
 					Vector3 sourceLocal = arrayOriginalVertices[i];	//posisi awal jaring
 					Vector3 dirLocal = (destLocal-sourceLocal); //arah tujuan jaring bs diperoleh dari selisih, trs di dot product
 				
-				
-					if (  Vector3.Dot( dirLocal, meshRed.normals[i] ) > 0.0f  ) {//klo arah jaring dan bola searah, klo berlawanan dot product jd -
+					if (  Vector3.Dot( dirLocal, meshRed.normals[i] ) > 0.0f  ) {
+						//klo arah jaring dan bola searah, klo berlawanan dot product jd -
 						Vector3 finalLocal = sourceLocal + (dirLocal/(distance+0.1f));
 						arrayVertices[i] = finalLocal; 
 					} else {

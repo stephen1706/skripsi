@@ -30,7 +30,7 @@ public class Player_Script : MonoBehaviour {
 	public Vector3 initialPosition;
 	public Vector3 kondisiAwal;
 	private float inputSteer;
-	private const float initialDisplacement = 20.0f;    
+	private const float initialDisplacement = 5.0f;  //maju berapa jauh dari posisi awal di scene  
 	public Transform goalPosition;
 	public Transform headTransform;    
 	[HideInInspector]    
@@ -396,7 +396,7 @@ public class Player_Script : MonoBehaviour {
 				
 				if ( gameObject.tag == "PlayerTeam1" ) {
 					sphere.timeShootButtonPressed = Mathf.Clamp(sphere.timeShootButtonPressed,0,0.5f);//max 0.5detik krn bar ud full
-					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x *30.0f, sphere.timeShootButtonPressed * 30.0f, transform.forward.z*30.0f*Strong);//TODO bisa x dirandom sama z ksh pengaruh dr power pemain
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x *30.0f, sphere.timeShootButtonPressed * 30.0f, transform.forward.z*30.0f*Strong);
 					barPosition = 0;//munculin shooting bar
 					sphere.timeShootButtonPressed = 0;
 				}
@@ -645,7 +645,6 @@ public class Player_Script : MonoBehaviour {
 			}
 			
 			if(/*!otherPlayerAlsoStoleBall && */(!sphere.owner || sphere.lastOwner.tag != gameObject.tag) ){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
-				//TODO HARUS DICEK APAKAH UDA ADA TEMEN LAEN YG STOLE BALL JG
 				if(sphere.lastOwner && sphere.lastOwner.tag == "GoalKeeper"){
 					Debug.Log("terakhir pny gk");
 					state = Player_State.GO_ORIGIN;
