@@ -243,7 +243,7 @@ public class InGameState_Script : MonoBehaviour {
 					state = InGameState.THROW_IN_CHASING;
 				
 				break;
-				case InGameState.THROW_IN_CHASING://stelah thowin seblm throwin done,buat play animasi
+				case InGameState.THROW_IN_CHASING://stelah thowin seblm throwin done,buat play animasi dan gerakin arah musuh
 				
 
 					candidateToThrowIn.transform.position = new Vector3( positionSide.x, candidateToThrowIn.transform.position.y, positionSide.z);
@@ -255,7 +255,7 @@ public class InGameState_Script : MonoBehaviour {
 
 					if ( whoLastTouched.tag != "PlayerTeam1" ) {//klo player yg ambl throwin
 				
-						targetThrowIn += new Vector3( 0,0,sphere.fHorizontal/10.0f);
+						targetThrowIn += new Vector3( 0,0,sphere.fHorizontal/10.0f);//arahin target dari input kiri kanan user
 					
 						if (sphere.bPassButton) {//klo tombol pass dipencet lempar bolanya
 							candidateToThrowIn.animation.Play("throw_in");

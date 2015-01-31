@@ -35,7 +35,7 @@ public class ZoneMark_Script : MonoBehaviour {
 			}
 			//aaDebug.Log(zoneOwner.name + "'s zone breach by " + other.gameObject.name);
 		} else if(other.gameObject.tag == "Ball" && zoneOwner.GetComponent<Player_Script>().type != Player_Script.TypePlayer.ATTACKER){
-			if(sphere.owner && sphere.owner.tag != gameObject.tag){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
+			if(!sphere.owner){//biar max 2org yg ngejer bola,bs jg cari smua pemaen statenya lg stole ball kg
 //				if(!sphere.whoMarkedMe.Contains(gameObject)){
 //					sphere.whoMarkedMe.Add(gameObject);
 //				}

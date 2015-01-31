@@ -89,7 +89,7 @@ public class Sphere : MonoBehaviour {
 			
 			if ( fVertical == 0.0f && fHorizontal == 0.0f  && owner.tag == "PlayerTeam1" ) {//klo pemiliknya player dan pemiliknya lg diem
 				velocity = 0.0f;
-				gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0,0,0);
+//				gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0,0,0);
 			}
 			
 			transform.RotateAround( owner.transform.right, velocity*10.0f );//rotatearound buat rotate bendanya
@@ -102,8 +102,9 @@ public class Sphere : MonoBehaviour {
 			ActivateNearestPlayer();
 	
 			if ( !owner || owner.tag == "PlayerTeam1" ){
-				if(lastOwner && lastOwner.tag == "GoalKeeper"){
-				} else{
+				if(lastOwner && lastOwner.tag == "GoalKeeper"){//buat kejer hasil lemparan GK
+					ActivateNearestOpponent();
+				} else if(!owner){
 
 					ActivateNearestOpponent(); //TEMPORARILY OFF, KARENA UD PK ZONE TRIGGER, bikin ancur klo diaktifin,org jd lari ditempat
 				}

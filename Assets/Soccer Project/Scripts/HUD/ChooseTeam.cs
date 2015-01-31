@@ -44,7 +44,7 @@ public class ChooseTeam : MonoBehaviour {
 						}
 
 						shield.renderer.material = selectMaterial;
-						//klo logo ini yg diklik, ganti materialny jd yg selected material, kyk ad jaring" gt materialny
+						//klo logo ini yg diklik, ganti materialny jd yg selected material, kyk ad jaring" gt materialny,klo yg normal default
 						Selected = shield.nameTeam;//ambil nama tim yg kepilih, cthnya blue
 					}
 				}

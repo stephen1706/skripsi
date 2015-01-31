@@ -126,7 +126,7 @@ public class Player_Script : MonoBehaviour {
 		if ( sphere.inputPlayer == gameObject ) {//klo pemaen ini pmaen yg dikontrol user
 			
 			if ( sphere.fVertical != 0.0f || sphere.fHorizontal != 0.0f ) {//klo playernya ada input gerak
-				
+				stamina -= 2.5f * Time.deltaTime;
 				oldVelocityPlayer = actualVelocityPlayer;
 				
 				Vector3 right = inGame.transform.right;//cari arah kiri kanan lapanganp berdasarkan kemana
@@ -242,14 +242,14 @@ public class Player_Script : MonoBehaviour {
 	
 	
 	void Case_Opponent_Attack() {
-		
+		stamina -= 2.5f * Time.deltaTime;
 		actualVelocityPlayer = transform.forward*5.0f*Time.deltaTime;
 		animation.Play("running_ball");
 		Vector3 RelativeWaypointPosition = transform.InverseTransformPoint(goalPosition.position);
 		inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//cr arah gawang dimana
-		transform.Rotate(0, inputSteer*20.0f , 0);//rotate player biar ke arah gawang,pdhl bs jg pk Mathf.Asin(inputsheer)
+		transform.Rotate(0, inputSteer*20.0f , 0);//rotate player biar ke arah gawang,pdhl bs jg pk Mathf.Asin(inputsheer) atau lookat ke gawang, tp jd lgsg belok jadi jelek
 		float staminaTemp = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
-		transform.position += transform.forward*4.0f*Time.deltaTime*staminaTemp*Speed;
+		transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp*Speed;
 		
 		timeToPass -= Time.deltaTime;
 		
@@ -306,7 +306,7 @@ public class Player_Script : MonoBehaviour {
 				state = Player_State.MOVE_AUTOMATIC ; 
 		}
 		
-		stamina += 2.0f * Time.deltaTime;//tmbhin stamina buat player yg kaga lg dikontrol
+		stamina += 1.0f * Time.deltaTime;//tmbhin stamina buat player yg kaga lg dikontrol
 		stamina = Mathf.Clamp(stamina, 1, 64);        //min 1,max 64,stamina ngaruh ke lari player
 		
 		switch ( state ) {
@@ -394,19 +394,25 @@ public class Player_Script : MonoBehaviour {
 				sphere.owner = null;
 				sphere.lastOwner = gameObject;
 				
+				float staminaTemp = Mathf.Clamp ((stamina / STAMINA_DIVIDER), STAMINA_MIN, STAMINA_MAX);
+
 				if ( gameObject.tag == "PlayerTeam1" ) {
 					sphere.timeShootButtonPressed = Mathf.Clamp(sphere.timeShootButtonPressed,0,0.5f);//max 0.5detik krn bar ud full
-					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x *30.0f, sphere.timeShootButtonPressed * 30.0f, transform.forward.z*30.0f*Strong);
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x *30.0f, 
+					                                                                   sphere.timeShootButtonPressed * 30.0f * staminaTemp, 
+					                                                                   transform.forward.z*30.0f*Strong*staminaTemp);
 					barPosition = 0;//munculin shooting bar
 					sphere.timeShootButtonPressed = 0;
 				}
 				else {
 					transform.LookAt (goalPosition);//liat ke arah gawang biar kg jauh bgt melesetnya
-					
+
 					float valueRndY = UnityEngine.Random.Range( 1.0f, 8.0f );//random tinggi tembakan musuh
 					
-					float valueRndX = UnityEngine.Random.Range(-5F,5F );//TADINYA FORWARD.X BIASA TP DIRANDOM BIAR BS OUT
-					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x*30.0f+valueRndX, valueRndY, transform.forward.z*30.0f );//kg pake right krn  right itu (1,0,0),sedangkan kita butuh x aja
+					float valueRndX = UnityEngine.Random.Range(-5F,5F );
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(transform.forward.x*30.0f+valueRndX, 
+					                                                                   valueRndY*staminaTemp, 
+					                                                                   transform.forward.z*staminaTemp*30.0f*Strong*staminaTemp );//kg pake right krn  right itu (1,0,0),sedangkan kita butuh x aja
 				}
 				
 			}
@@ -633,35 +639,22 @@ public class Player_Script : MonoBehaviour {
 			
 		case Player_State.STOLE_BALL:
 			collider.enabled = true;
-			
-			bool otherPlayerAlsoStoleBall = false;
-			if(tag == "OponentTeam"){
-				foreach(GameObject oponent in oponents){
-					if(oponent != gameObject && oponent.GetComponent<Player_Script>().state == Player_State.STOLE_BALL){
-						otherPlayerAlsoStoleBall  = true;
-						break;
-					}
-				}
-			}
-			
-			if(/*!otherPlayerAlsoStoleBall && */(!sphere.owner || sphere.lastOwner.tag != gameObject.tag) ){//tdmya ga pake ginian if tp jd ngebug kiperny ttp ngejjar walopun ud diambel tmnnya
-				if(sphere.lastOwner && sphere.lastOwner.tag == "GoalKeeper"){
-					Debug.Log("terakhir pny gk");
-					state = Player_State.GO_ORIGIN;
-				} else{
-					Vector3 relPos = transform.InverseTransformPoint( sphere.transform.position );
-					inputSteer = relPos.x / relPos.magnitude;
-					transform.Rotate(0, inputSteer*20.0f , 0);
-					
-					animation.Play("running");
-					float staminaTemp3 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
-					transform.position += transform.forward*4.5f*Time.deltaTime*staminaTemp3*Speed;
-				}
-			} else{
-				Debug.Log(name + "dr stole ball ke move auto, karena lastowner = " + sphere.lastOwner.tag);
+			if(sphere.owner) {//kalau sudah ada yg punya jgn stole ball lagi
 				state = Player_State.MOVE_AUTOMATIC;
+			}  else {//msh kosong bolanaya, boleh kejer terus
+		
+				if(!sphere.owner || sphere.lastOwner.tag != gameObject.tag){
+
+						Vector3 relPos = transform.InverseTransformPoint( sphere.transform.position );
+						inputSteer = relPos.x / relPos.magnitude;
+						transform.Rotate(0, inputSteer*20.0f , 0);
+						
+						animation.Play("running");
+						float staminaTemp3 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
+						transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp3*Speed;
+
+				} 
 			}
-			
 			break;
 			
 		case Player_State.STOLE_BALL_NO_CHECK:
@@ -676,7 +669,7 @@ public class Player_Script : MonoBehaviour {
 				
 				animation.Play("running");
 				float staminaTemp3 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
-				transform.position += transform.forward*4.5f*Time.deltaTime*staminaTemp3*Speed;
+				transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp3*Speed;
 			} else{
 				state = Player_State.MOVE_AUTOMATIC;
 			}
@@ -693,7 +686,7 @@ public class Player_Script : MonoBehaviour {
 				
 				animation.Play("running");
 				float staminaTemp4 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
-				transform.position += transform.forward*4.5f*Time.deltaTime*staminaTemp4*Speed;
+				transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp4*Speed;
 			} else if(sphere.owner && sphere.owner.tag == tag) {
 				state = Player_State.MOVE_AUTOMATIC;
 			} else{
@@ -703,7 +696,7 @@ public class Player_Script : MonoBehaviour {
 				
 				animation.Play("running");
 				float staminaTemp4 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
-				transform.position += transform.forward*4.5f*Time.deltaTime*staminaTemp4*Speed;
+				transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp4*Speed;
 			}
 			break;
 			
@@ -787,7 +780,7 @@ public class Player_Script : MonoBehaviour {
 			//head transform itu posisi kepala pemain
 			Vector3 posBar = Camera.main.WorldToScreenPoint( headTransform.position + new Vector3(0,1.0f,0) );
 			GUI.DrawTexture( new Rect( posBar.x-30, (Screen.height-posBar.y), (int)stamina, 10 ), barStaminaTexture );
-			stamina -= 1.5f * Time.deltaTime;
+//			stamina -= 1.5f * Time.deltaTime;
 			
 		}
 		
@@ -809,7 +802,7 @@ public class Player_Script : MonoBehaviour {
 		
 		animation.Play("running");
 		float staminaTemp3 = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
-		transform.position += transform.forward*4.5f*Time.deltaTime*staminaTemp3*Speed;
+		transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp3*Speed;
 		
 		//        Vector3 RelativeWaypointP = new Vector3 (posFinal.x, posFinal.y, posFinal.z);
 		//        if (distanceToDestination > 5.0f) {//lari trs ke arah bola

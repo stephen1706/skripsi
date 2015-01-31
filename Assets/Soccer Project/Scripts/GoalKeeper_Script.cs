@@ -203,12 +203,6 @@ public class GoalKeeper_Script : MonoBehaviour {
 				transform.Rotate(0, inputSteer*10.0f , 0);//rotate kiper sejauh x/total jarak
 				transform.position += transform.forward*6.0f*Time.deltaTime;//gerakin kiper maju kearah bola krn ud dirotate,jd tinggal fwd
 
-		
-				if ( RelativeWaypointPosition.magnitude < 1.0f ) {
-			
-//					state = GoalKeeper_State.RESTING;					
-				}
-
 			break;
 	
 	
