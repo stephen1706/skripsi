@@ -59,8 +59,11 @@
      <Compile Include="Assets\Soccer Project\Scripts\HUD\SetShield.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\HUD\ShieldMenu.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\InGameState_Script.cs" />
+     <Compile Include="Assets\Soccer Project\Scripts\Joystick_Script.cs" />
+     <Compile Include="Assets\Soccer Project\Scripts\Pass_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Player_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Shadow_Script.cs" />
+     <Compile Include="Assets\Soccer Project\Scripts\Shoot_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Side_Script.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\Sphere.cs" />
      <Compile Include="Assets\Soccer Project\Scripts\ZoneMark_Script.cs" />

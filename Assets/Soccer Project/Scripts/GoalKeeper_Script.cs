@@ -26,6 +26,10 @@ public class GoalKeeper_Script : MonoBehaviour {
 	public Transform hand_bone;
 	private float timeToHoldBall = 1.0f;
 	public CapsuleCollider capsuleCollider;	
+	public float JumpSpeed;
+	public float Speed;
+	private float goalWidthFromCenter = 3.75f;
+	private float maxPositionXToReachEdgeOfGoal = 15.0f;
 
 	void Start () {
 	
@@ -48,7 +52,9 @@ public class GoalKeeper_Script : MonoBehaviour {
 				capsuleCollider.direction = 0;
 			
 				if ( animation["goalkeeper_clear_left_up"].normalizedTime < 0.45f  ) {//klo animasi blm 0.45 bagian,gerakin kiper ke kiri trs
-					transform.position -= transform.right * Time.deltaTime * 7.0f; //gerakin posisi kiper ke kiri
+//					transform.position -= transform.right * Time.deltaTime * 7.0f; //gerakin posisi kiper ke kiri
+					transform.position = Vector3.Lerp(transform.position, sphere.transform.position,JumpSpeed*Time.deltaTime);
+
 				}
 			
 			
@@ -65,7 +71,9 @@ public class GoalKeeper_Script : MonoBehaviour {
 				capsuleCollider.direction = 0;
 
 				if ( animation["goalkeeper_clear_right_up"].normalizedTime < 0.45f  ) {
-					transform.position += transform.right * Time.deltaTime * 7.0f;
+//					transform.position += transform.right * Time.deltaTime * 7.0f;
+					transform.position = Vector3.Lerp(transform.position, sphere.transform.position,JumpSpeed*Time.deltaTime);
+
 				}		
 				if ( !animation.IsPlaying("goalkeeper_clear_right_up") ) {
 					state = GoalKeeper_State.STOLE_BALL;		
@@ -82,7 +90,9 @@ public class GoalKeeper_Script : MonoBehaviour {
 				capsuleCollider.direction = 0;
 			
 				if ( animation["goalkeeper_clear_left_down"].normalizedTime < 0.45f  ) {
-					transform.position -= transform.right * Time.deltaTime * 4.0f;
+//					transform.position -= transform.right * Time.deltaTime * 4.0f;
+					transform.position = Vector3.Lerp(transform.position, sphere.transform.position,JumpSpeed*Time.deltaTime);
+
 				}
 			
 			
@@ -99,7 +109,9 @@ public class GoalKeeper_Script : MonoBehaviour {
 				capsuleCollider.direction = 0;
 
 				if ( animation["goalkeeper_clear_right_down"].normalizedTime < 0.45f  ) {
-					transform.position += transform.right * Time.deltaTime * 4.0f;
+//					transform.position += transform.right * Time.deltaTime * 4.0f;
+					transform.position = Vector3.Lerp(transform.position, sphere.transform.position,JumpSpeed*Time.deltaTime);
+
 				}		
 				if ( !animation.IsPlaying("goalkeeper_clear_right_down") ) {
 					state = GoalKeeper_State.STOLE_BALL;		
@@ -124,6 +136,9 @@ public class GoalKeeper_Script : MonoBehaviour {
 				if ( animation["goalkeeper_throw_out"].normalizedTime > 0.65f && sphere.gameObject.GetComponent<Rigidbody>().isKinematic == true ) { //klo ud lwt 0.65 bagian
 					sphere.gameObject.GetComponent<Rigidbody>().isKinematic = false;//set bolany kg kinematic lg,jd bs ketarik gravitasi
 					sphere.gameObject.GetComponent<Rigidbody>().AddForce( transform.forward*5000.0f + new Vector3(0.0f, 1300.0f, 0.0f) );//gerakin bola maju
+				//top velocity dari add force ini adalah = (reference http://answers.unity3d.com/questions/151724/calculating-rigidbody-top-speed.html)
+				// float topVelocity = ((addedForce.magnitude / rigidbody.drag) - Time.fixedDeltaTime * addedForce.magnitude) / rigidbody.mass;
+
 				}
 		
 				if ( !animation.IsPlaying("goalkeeper_throw_out") || !animation.IsPlaying("goalkeeper_throw_out") ) {//klo animasi ud abis
@@ -183,7 +198,13 @@ public class GoalKeeper_Script : MonoBehaviour {
 					animation.Play("goalkeeper_rest");
 				
 				transform.LookAt( new Vector3( sphere.gameObject.transform.position.x, transform.position.y , sphere.gameObject.transform.position.z)  );
-			
+				//lebar stadium 75, lebar gawang 7.5, waktu uda 15 ud hrs mentok
+				float destinationX = Mathf.Clamp(sphere.transform.position.x * goalWidthFromCenter / maxPositionXToReachEdgeOfGoal ,
+				                                 -goalWidthFromCenter,
+				                                 goalWidthFromCenter);
+				transform.position = Vector3.Lerp(transform.position, 
+				                                  new Vector3(destinationX,transform.position.y,transform.position.z),
+				                                  Time.deltaTime);
 				float distanceBall = (transform.position - sphere.gameObject.transform.position).magnitude;
 		
 				if ( distanceBall < 10.0f ) {//klo jarak bola ama kiper < 10 gerakin kiper buat ambl bola
@@ -201,7 +222,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 				float inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//bagi jarak x ama jarak total x,y,z
 
 				transform.Rotate(0, inputSteer*10.0f , 0);//rotate kiper sejauh x/total jarak
-				transform.position += transform.forward*6.0f*Time.deltaTime;//gerakin kiper maju kearah bola krn ud dirotate,jd tinggal fwd
+				transform.position += transform.forward*4.5f*Speed*Time.deltaTime;//gerakin kiper maju kearah bola krn ud dirotate,jd tinggal fwd
 
 			break;
 	
@@ -214,7 +235,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 				inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;
 			
 				transform.Rotate(0, inputSteer*10.0f, 0);
-				transform.position += transform.forward*6.0f*Time.deltaTime;
+				transform.position += transform.forward*4.5f*Speed*Time.deltaTime;
 
 		
 				if ( RelativeWaypointPosition.magnitude < 1.0f ) {//klo ud dkt bgt ganti statenya jd rest

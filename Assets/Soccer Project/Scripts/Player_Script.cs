@@ -180,7 +180,9 @@ public class Player_Script : MonoBehaviour {
 					sphere.owner = null;
 					gameObject.GetComponent<CapsuleCollider>().enabled = false;//di buat false biar kaga mental" wkt giring bola
 					sphere.gameObject.GetComponent<Rigidbody>().AddForce(  -transform.forward.x*1500.0f, -transform.forward.y*1500.0f, -transform.forward.z*1500.0f );
-					
+					//top velocity dari add force ini adalah = (reference http://answers.unity3d.com/questions/151724/calculating-rigidbody-top-speed.html)
+					// float topVelocity = ((addedForce.magnitude / rigidbody.drag) - Time.fixedDeltaTime * addedForce.magnitude) / rigidbody.mass;
+
 				}
 				
 				
@@ -243,12 +245,12 @@ public class Player_Script : MonoBehaviour {
 	
 	void Case_Opponent_Attack() {
 		stamina -= 2.5f * Time.deltaTime;
-		actualVelocityPlayer = transform.forward*5.0f*Time.deltaTime;
 		animation.Play("running_ball");
 		Vector3 RelativeWaypointPosition = transform.InverseTransformPoint(goalPosition.position);
 		inputSteer = RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude;//cr arah gawang dimana
 		transform.Rotate(0, inputSteer*20.0f , 0);//rotate player biar ke arah gawang,pdhl bs jg pk Mathf.Asin(inputsheer) atau lookat ke gawang, tp jd lgsg belok jadi jelek
 		float staminaTemp = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
+		actualVelocityPlayer = transform.forward*5.0f*Time.deltaTime*Speed*staminaTemp;
 		transform.position += transform.forward*5.0f*Time.deltaTime*staminaTemp*Speed;
 		
 		timeToPass -= Time.deltaTime;
@@ -497,34 +499,25 @@ public class Player_Script : MonoBehaviour {
 					} 
 				}
 				
+				float staminaTemp = Mathf.Clamp ((stamina/STAMINA_DIVIDER), STAMINA_MIN ,STAMINA_MAX );
 				if ( bestCandidateCoord != 1000.0f ) {
 					Debug.Log(gameObject.name + " pass to " + bestCandidatePlayer.name);
-					
-					//                    GameObject s = sphere.GetComponent<Sphere>().gameObject;
-					//                    BoxCollider bc = (BoxCollider) s.AddComponent("BoxCollider");
-					//                    bc.center = sphere.transform.position;
-					//                    bc.size = new Vector3(10,10,10);
-					//coba bikin collider buat test bolany bkl diblok kaga, tp kykny malah kna jd throwin trs bolany melayang
-					
+
 					Vector3 relPos = transform.InverseTransformPoint( bestCandidatePlayer.transform.position );
 					inputSteer = relPos.x / relPos.magnitude;
 					transform.Rotate(0, inputSteer*20.0f , 0);
 					collider.enabled = false;
 					
 					animation.Play("pass");
-					sphere.inputPlayer = bestCandidatePlayer;//set pemaen yg diselected itu yg terdekat
-					Vector3 directionBall = (bestCandidatePlayer.transform.position - transform.position).normalized;//itung arah bola biar bs ngarah ke penerima passer,caranya set sumbu x velocity bola sesuai direction
-					float distanceBall = (bestCandidatePlayer.transform.position - transform.position).magnitude*1.0f;//itung jarak total bola dr sumbu x,y,z
-					distanceBall = Mathf.Clamp( distanceBall, 13.0f, 40.0f );//jarak max passing 40
-					//if(distanceBall < 25){
-						sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(directionBall.x*distanceBall, distanceBall/5.0f, directionBall.z*distanceBall * 0.8f);
-//
-//					}else{
-//						sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(directionBall.x*distanceBall, distanceBall/5.0f, directionBall.z*distanceBall * 0.65f);
-//					}
+					sphere.inputPlayer = bestCandidatePlayer;
+					Vector3 directionBall = (bestCandidatePlayer.transform.position - transform.position).normalized;
+					float distanceBall = (bestCandidatePlayer.transform.position - transform.position).magnitude * staminaTemp;
+					distanceBall = Mathf.Clamp( distanceBall, 13.0f, 40.0f );
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(directionBall.x*distanceBall, 
+					                                                                   distanceBall/5.0f, 
+					                                                                   directionBall.z*distanceBall * 0.8f);
 				} else {
-					//klo ga ada penerima yg layak (khusus player krn enemy klo ga ad tmn pst pass k yg plg dpn)
-					sphere.gameObject.GetComponent<Rigidbody>().velocity = transform.forward*20.0f;
+					sphere.gameObject.GetComponent<Rigidbody>().velocity = transform.forward*20.0f*staminaTemp;
 				}
 				
 			}
@@ -632,7 +625,7 @@ public class Player_Script : MonoBehaviour {
 			if (animation.IsPlaying("jump_backwards_bucle") == false)//klo ud abis animasi mundurnya otomatis lg geraknya
 				state = Player_State.MOVE_AUTOMATIC;
 			
-			transform.position -= transform.forward*Time.deltaTime*4.0f;    //lari mundur buat ksh jarak ke tmn
+			transform.position -= transform.forward*Time.deltaTime*Speed*5.0f;    //lari mundur buat ksh jarak ke tmn
 			
 			break;
 			
