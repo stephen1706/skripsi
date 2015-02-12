@@ -23,8 +23,8 @@ public class GoalKeeperJump : MonoBehaviour {//script dari box collider box yg d
 			Vector3 dir_ball = other.gameObject.GetComponent<Rigidbody>().velocity;//dptin v dari bola
 			dir_ball.Normalize();//normalize bikin x^+y^+z^ = 1,jd diturunin angka"ny
 			
-			float det = Vector3.Dot( dir_goalkeeper, dir_ball );//dptin hasil cos dr sudut antara GK dan bola
-						
+			float det = Vector3.Dot( dir_goalkeeper, dir_ball );//dptin hasil dot product dr sudut antara GK dan bola
+						//klo det = 1 artinya searah total, -1 berlawanan arah, 0 tegak lurus
 //			Debug.Log("det " + Mathf.Acos(det) * 57.0f + " speed " + other.gameObject.GetComponent<Rigidbody>().velocity.magnitude);
 			float degree = Mathf.Acos(det) * 57.0f;//dptin arah lompatnya GK,acos buat cari sudut antara GK ama bola
 			
